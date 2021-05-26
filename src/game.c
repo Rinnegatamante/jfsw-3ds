@@ -823,8 +823,11 @@ void Set_GameMode(void)
 
     //DSPRINTF(ds,"ScreenMode %d, ScreenWidth %d, ScreenHeight %d",ScreenMode, ScreenWidth, ScreenHeight);
     //MONO_PRINT(ds);
+#ifdef _3DS
+    result = COVERsetgamemode(ScreenMode, 400, 240, ScreenBPP);
+#else
     result = COVERsetgamemode(ScreenMode, ScreenWidth, ScreenHeight, ScreenBPP);
-
+#endif
     if (result < 0)
         {
         buildprintf("Failure setting video mode %dx%dx%d %s! Attempting safer mode...",
@@ -1444,14 +1447,23 @@ InitLevel(VOID)
     PlayerPanelSetup();
     MapSetup();
     SectorSetup();
+#ifdef _3DS
+    printf("JS_InitMirrors fails\n");
+#else
     JS_InitMirrors();
+#endif
     JS_InitLockouts();   // Setup the lockout linked lists
     JS_ToggleLockouts(); // Init lockouts on/off
 
     PlaceSectorObjectsOnTracks();
     PlaceActorsOnTracks();
     PostSetupSectorObject();
+#ifdef _3DS
+    printf("SetupMirrorTiles fails\n");
+//    svcSleepThread(10000);
+#else
     SetupMirrorTiles();
+#endif
     initlava();
 
     SongLevelNum = Level;
@@ -2913,6 +2925,7 @@ GameIntro(VOID)
         //SceneLevel();
         //TitleLevel();
         IntroAnimLevel();
+
         IntroAnimCount = 0;
         }
 
@@ -3134,7 +3147,7 @@ VOID InitRunLevel(VOID)
 
     // auto aim / auto run / etc
     InitPlayerGameSettings();
-
+#ifndef _3DS
     // send packets with player info
     InitNetPlayerOptions();
 
@@ -3150,7 +3163,7 @@ VOID InitRunLevel(VOID)
         }
         PlaySong(LevelSong, track, TRUE, TRUE);
     }
-
+#endif
     InitPrediction(&Player[myconnectindex]);
 
     if (!DemoInitOnce)

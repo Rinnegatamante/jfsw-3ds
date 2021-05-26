@@ -1,0 +1,447 @@
+#---------------------------------------------------------------------------------
+.SUFFIXES:
+#---------------------------------------------------------------------------------
+
+ifeq ($(strip $(DEVKITARM)),)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+endif
+
+ifeq ($(strip $(TOOLDIR)),)
+export TOOLDIR=$(DEVKITPRO)/tools/bin
+endif
+
+TOPDIR ?= $(CURDIR)
+include $(DEVKITARM)/3ds_rules
+
+#---------------------------------------------------------------------------------
+# TARGET is the name of the output
+# BUILD is the directory where object files & intermediate files will be placed
+# SOURCES is a list of directories containing source code
+# DATA is a list of directories containing data files
+# INCLUDES is a list of directories containing header files
+# GRAPHICS is a list of directories containing graphics files
+# GFXBUILD is the directory where converted graphics files will be placed
+#   If set to $(BUILD), it will statically link in the converted
+#   files as if they were data files.
+#
+# NO_SMDH: if set to anything, no SMDH file is generated.
+# ROMFS is the directory which contains the RomFS, relative to the Makefile (Optional)
+# APP_TITLE is the name of the app stored in the SMDH file (Optional)
+# APP_DESCRIPTION is the description of the app stored in the SMDH file (Optional)
+# APP_AUTHOR is the author of the app stored in the SMDH file (Optional)
+# ICON is the filename of the icon (.png), relative to the project folder.
+#   If not set, it attempts to use one of the following (in this order):
+#     - <Project name>.png
+#     - icon.png
+#     - <libctru folder>/default_icon.png
+#---------------------------------------------------------------------------------
+
+TARGET		:=	jfsw
+BUILD		:=	build
+SOURCES		:=	.
+DATA		:=	data
+INCLUDES	:=	src jfbuild/include jfmact jfaudiolib/include
+GRAPHICS	:=	gfx
+GFXBUILD	:=	$(BUILD)
+#ROMFS		:=	romfs
+#GFXBUILD	:=	$(ROMFS)/gfx
+
+APP_TITLE   	:=  Shadow Warrior
+APP_DESCRIPTION :=  JFSW port for 3DS
+APP_AUTHOR  	:=  MrHuu
+
+APP_PRODUCT_CODE	:=	CTR-P-JFSW
+APP_UNIQUE_ID		:=	0x6F43C
+APP_VERSION_MAJOR	:=	0
+APP_VERSION_MINOR	:=	0
+APP_VERSION_MICRO	:=	1
+
+RSF					:=	$(TOPDIR)/rsrc/ctr/template.rsf
+APP_LOGO			:=	$(TOPDIR)/rsrc/ctr/hb_logo.bin
+APP_ICON			:=	$(TOPDIR)/rsrc/ctr/icon.png
+
+BANNER_IMAGE_FILE	:=	$(TOPDIR)/rsrc/ctr/banner.png
+BANNER_AUDIO_FILE	:=	$(TOPDIR)/rsrc/ctr/audio_silent.wav
+
+# build locations
+SRC=src
+EINC=$(EROOT)/include
+ELIB=$(EROOT)
+
+#engine
+EROOT ?= jfbuild
+ESRC ?= $(EROOT)/src
+
+MACTROOT ?= jfmact
+
+AUDIOSRC = jfaudiolib/src
+
+#---------------------------------------------------------------------------------
+# options for code generation
+#---------------------------------------------------------------------------------
+ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
+
+CFLAGS	:=	-g -Wall -O2 -mword-relocations \
+			-fomit-frame-pointer -ffunction-sections \
+			$(ARCH)
+
+CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS -DNOASM -DHAVE_VORBIS
+
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
+
+ASFLAGS	:=	-g $(ARCH)
+LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+
+LIBS	:= -lvorbisidec -logg -lctru -lm
+
+#---------------------------------------------------------------------------------
+# list of directories containing libraries, this must be the top level containing
+# include and lib
+#---------------------------------------------------------------------------------
+LIBDIRS	:= $(CTRULIB)
+
+
+#---------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#---------------------------------------------------------------------------------
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+#---------------------------------------------------------------------------------
+
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export TOPDIR	:=	$(CURDIR)
+
+export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(GRAPHICS),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+
+export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+
+
+JFBUILDOBJS = \
+	$(ESRC)/a-c.o \
+  	$(ESRC)/asmprot.o \
+	$(ESRC)/baselayer.o \
+	$(ESRC)/cache1d.o \
+	$(ESRC)/compat.o \
+	$(ESRC)/crc32.o \
+	$(ESRC)/defs.o \
+	$(ESRC)/engine.o \
+	$(ESRC)/kplib.o \
+	$(ESRC)/osd.o \
+	$(ESRC)/pragmas.o \
+	$(ESRC)/scriptfile.o \
+	$(ESRC)/ctrlayer.o \
+	$(ESRC)/textfont.o \
+	$(ESRC)/smalltextfont.o \
+	$(ESRC)/mmulti_null.o \
+	$(ESRC)/version.o
+	
+JFMACTOBJS = \
+	$(MACTROOT)/util_lib.o \
+	$(MACTROOT)/file_lib.o \
+	$(MACTROOT)/control.o \
+	$(MACTROOT)/keyboard.o \
+	$(MACTROOT)/mouse.o \
+	$(MACTROOT)/mathutil.o \
+	$(MACTROOT)/scriplib.o \
+	$(MACTROOT)/animlib.o
+
+JFAUDIOLIBOBJS= \
+	$(AUDIOSRC)/drivers.o \
+	$(AUDIOSRC)/fx_man.o \
+	$(AUDIOSRC)/cd.o \
+	$(AUDIOSRC)/multivoc.o \
+	$(AUDIOSRC)/mix.o \
+	$(AUDIOSRC)/mixst.o \
+	$(AUDIOSRC)/pitch.o \
+	$(AUDIOSRC)/vorbis.o \
+	$(AUDIOSRC)/music.o \
+	$(AUDIOSRC)/midi.o \
+	$(AUDIOSRC)/driver_ctr.o \
+	$(AUDIOSRC)/driver_nosound.o \
+	$(AUDIOSRC)/asssys.o
+
+GAMEOBJS = \
+	$(SRC)/actor.o \
+	$(SRC)/ai.o \
+	$(SRC)/anim.o \
+	$(SRC)/border.o \
+	$(SRC)/break.o \
+	$(SRC)/bunny.o \
+	$(SRC)/cache.o \
+	$(SRC)/cheats.o \
+	$(SRC)/colormap.o \
+	$(SRC)/config.o \
+	$(SRC)/console.o \
+	$(SRC)/coolg.o \
+	$(SRC)/coolie.o \
+	$(SRC)/copysect.o \
+	$(SRC)/demo.o \
+	$(SRC)/draw.o \
+	$(SRC)/eel.o \
+	$(SRC)/game.o \
+	$(SRC)/girlninj.o \
+	$(SRC)/goro.o \
+	$(SRC)/grpscan.o \
+	$(SRC)/hornet.o \
+	$(SRC)/interp.o \
+	$(SRC)/interpsh.o \
+	$(SRC)/inv.o \
+	$(SRC)/jplayer.o \
+	$(SRC)/jsector.o \
+	$(SRC)/jweapon.o \
+	$(SRC)/lava.o \
+	$(SRC)/light.o \
+	$(SRC)/mclip.o \
+	$(SRC)/menus.o \
+	$(SRC)/miscactr.o \
+	$(SRC)/morph.o \
+	$(SRC)/net.o \
+	$(SRC)/ninja.o \
+	$(SRC)/panel.o \
+	$(SRC)/player.o \
+	$(SRC)/predict.o \
+	$(SRC)/quake.o \
+	$(SRC)/ripper.o \
+	$(SRC)/ripper2.o \
+	$(SRC)/rooms.o \
+	$(SRC)/rotator.o \
+	$(SRC)/rts.o \
+	$(SRC)/save.o \
+	$(SRC)/scrip2.o \
+	$(SRC)/sector.o \
+	$(SRC)/serp.o \
+	$(SRC)/setup.o \
+	$(SRC)/skel.o \
+	$(SRC)/skull.o \
+	$(SRC)/slidor.o \
+	$(SRC)/sounds.o \
+	$(SRC)/spike.o \
+	$(SRC)/sprite.o \
+	$(SRC)/sumo.o \
+	$(SRC)/swconfig.o \
+	$(SRC)/sync.o \
+	$(SRC)/text.o \
+	$(SRC)/track.o \
+	$(SRC)/vator.o \
+	$(SRC)/version.o \
+	$(SRC)/vis.o \
+	$(SRC)/wallmove.o \
+	$(SRC)/warp.o \
+	$(SRC)/weapon.o \
+	$(SRC)/zilla.o \
+	$(SRC)/zombie.o \
+	$(SRC)/saveable.o
+
+#---------------------------------------------------------------------------------
+# use CXX for linking C++ projects, CC for standard C
+#---------------------------------------------------------------------------------
+ifeq ($(strip $(CPPFILES)),)
+#---------------------------------------------------------------------------------
+	export LD	:=	$(CC)
+#---------------------------------------------------------------------------------
+else
+#---------------------------------------------------------------------------------
+	export LD	:=	$(CXX)
+#---------------------------------------------------------------------------------
+endif
+#---------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------
+ifeq ($(GFXBUILD),$(BUILD))
+#---------------------------------------------------------------------------------
+export T3XFILES :=  $(GFXFILES:.t3s=.t3x)
+#---------------------------------------------------------------------------------
+else
+#---------------------------------------------------------------------------------
+export ROMFS_T3XFILES	:=	$(patsubst %.t3s, $(GFXBUILD)/%.t3x, $(GFXFILES))
+export T3XHFILES		:=	$(patsubst %.t3s, $(BUILD)/%.h, $(GFXFILES))
+#---------------------------------------------------------------------------------
+endif
+#---------------------------------------------------------------------------------
+
+export OFILES_SOURCES 	:=	$(JFBUILDOBJS) $(GAMEOBJS) $(JFMACTOBJS) $(JFAUDIOLIBOBJS)
+
+export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES)) \
+			$(PICAFILES:.v.pica=.shbin.o) $(SHLISTFILES:.shlist=.shbin.o) \
+			$(addsuffix .o,$(T3XFILES))
+
+export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
+
+export HFILES	:=	$(PICAFILES:.v.pica=_shbin.h) $(SHLISTFILES:.shlist=_shbin.h) \
+			$(addsuffix .h,$(subst .,_,$(BINFILES))) \
+			$(GFXFILES:.t3s=.h)
+
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(CURDIR)/$(BUILD) -I$(PORTLIBS)/include
+
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) -L$(DEVKITPRO)/libctru/include -L$(PORTLIBS)/lib
+
+#export _3DSXDEPS	:=	$(if $(NO_SMDH),,$(OUTPUT).smdh)
+
+ifeq ($(strip $(ICON)),)
+	icons := $(wildcard *.png)
+	ifneq (,$(findstring $(TARGET).png,$(icons)))
+		export APP_ICON := $(TOPDIR)/$(TARGET).png
+	else
+		ifneq (,$(findstring icon.png,$(icons)))
+			export APP_ICON := $(TOPDIR)/icon.png
+		endif
+	endif
+else
+	export APP_ICON := $(TOPDIR)/$(ICON)
+endif
+
+ifeq ($(strip $(NO_SMDH)),)
+	export _3DSXFLAGS += --smdh=$(TARGET).smdh
+endif
+
+ifneq ($(ROMFS),)
+	export _3DSXFLAGS += --romfs=$(CURDIR)/$(ROMFS)
+endif
+
+.PHONY: all clean
+
+#---------------------------------------------------------------------------------
+all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES)
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile.ctr
+
+$(BUILD):
+	@mkdir -p $@
+	@mkdir -p $@/src
+	@mkdir -p $@/jfbuild
+	@mkdir -p $@/jfbuild/src
+	@mkdir -p $@/jfmact
+	@mkdir -p $@/jfaudiolib
+	@mkdir -p $@/jfaudiolib/src
+
+ifneq ($(GFXBUILD),$(BUILD))
+$(GFXBUILD):
+	@mkdir -p $@
+endif
+
+ifneq ($(DEPSDIR),$(BUILD))
+$(DEPSDIR):
+	@mkdir -p $@
+endif
+
+#---------------------------------------------------------------------------------
+clean:
+	@echo clean ...
+	@rm -fr $(BUILD) $(TARGET).3dsx $(TARGET).cia $(TARGET).elf $(GFXBUILD)
+
+#---------------------------------------------------------------------------------
+$(GFXBUILD)/%.t3x	$(BUILD)/%.h	:	%.t3s
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@tex3ds -i $< -H $(BUILD)/$*.h -d $(DEPSDIR)/$*.d -o $(GFXBUILD)/$*.t3x
+
+#---------------------------------------------------------------------------------
+else
+
+BANNER_IMAGE_ARG			:=	-i $(BANNER_IMAGE_FILE)
+BANNER_AUDIO_ARG			:=	-a $(BANNER_AUDIO_FILE)
+
+ifneq ($(APP_LOGO),)
+	APP_LOGO_ID				=	Homebrew
+	COMMON_MAKEROM_PARAMS	+=	-logo $(APP_LOGO)
+else
+	APP_LOGO_ID				=	Nintendo
+endif
+
+COMMON_MAKEROM_PARAMS		:= -rsf $(RSF) -target t -exefslogo -elf $(OUTPUT).elf -icon $(TARGET).smdh \
+-banner $(TARGET).bnr -DAPP_LOGO_ID="$(APP_LOGO_ID)" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(APP_PRODUCT_CODE)" \
+-DAPP_UNIQUE_ID="$(APP_UNIQUE_ID)" -DAPP_SYSTEM_MODE="64MB" -DAPP_SYSTEM_MODE_EXT="Legacy" \
+-major "$(APP_VERSION_MAJOR)" -minor "$(APP_VERSION_MINOR)" -micro "$(APP_VERSION_MICRO)"
+
+ifneq ($(ROMFS),)
+	APP_ROMFS				:=	$(TOPDIR)/$(ROMFS)
+	COMMON_MAKEROM_PARAMS	+=	-DAPP_ROMFS="$(APP_ROMFS)" 
+endif
+
+ifeq ($(OS),Windows_NT)
+	MAKEROM		=	makerom.exe
+	BANNERTOOL	=	bannertool.exe
+else
+	MAKEROM		=	$(TOOLDIR)/makerom
+	BANNERTOOL	=	$(TOOLDIR)/bannertool
+endif
+
+#---------------------------------------------------------------------------------
+# main targets
+#---------------------------------------------------------------------------------
+.PHONY : all
+
+all				:	$(OUTPUT).3dsx $(OUTPUT).cia
+
+$(OUTPUT).3dsx	:	$(OUTPUT).elf $(TARGET).smdh
+
+$(OFILES_SOURCES) : $(HFILES)
+
+$(OUTPUT).elf	:	$(OFILES)
+
+$(OUTPUT).cia		:	$(OUTPUT).elf $(TARGET).bnr $(TARGET).smdh
+	@$(MAKEROM) -f cia -o $(OUTPUT).cia -DAPP_ENCRYPTED=false $(COMMON_MAKEROM_PARAMS)
+	@echo "built ... $(TARGET).cia"
+
+$(TARGET).bnr : $(BANNER_IMAGE_FILE) $(BANNER_AUDIO_FILE)
+	@$(BANNERTOOL) makebanner $(BANNER_IMAGE_ARG) $(BANNER_AUDIO_ARG) -o $(TARGET).bnr > /dev/null
+
+$(TARGET).smdh : $(APP_ICON)
+	@$(BANNERTOOL) makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i $(APP_ICON) -o $(TARGET).smdh > /dev/null
+
+#---------------------------------------------------------------------------------
+# you need a rule like this for each extension you use as binary data
+#---------------------------------------------------------------------------------
+%.bin.o	%_bin.h :	%.bin
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@$(bin2o)
+
+#---------------------------------------------------------------------------------
+.PRECIOUS	:	%.t3x
+#---------------------------------------------------------------------------------
+%.t3x.o	%_t3x.h :	%.t3x
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@$(bin2o)
+
+#---------------------------------------------------------------------------------
+# rules for assembling GPU shaders
+#---------------------------------------------------------------------------------
+define shader-as
+	$(eval CURBIN := $*.shbin)
+	$(eval DEPSFILE := $(DEPSDIR)/$*.shbin.d)
+	echo "$(CURBIN).o: $< $1" > $(DEPSFILE)
+	echo "extern const u8" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(CURBIN) | tr . _)`.h
+	echo "extern const u8" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(CURBIN) | tr . _)`.h
+	echo "extern const u32" `(echo $(CURBIN) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(CURBIN) | tr . _)`.h
+	picasso -o $(CURBIN) $1
+	bin2s $(CURBIN) | $(AS) -o $*.shbin.o
+endef
+
+%.shbin.o %_shbin.h : %.v.pica %.g.pica
+	@echo $(notdir $^)
+	@$(call shader-as,$^)
+
+%.shbin.o %_shbin.h : %.v.pica
+	@echo $(notdir $<)
+	@$(call shader-as,$<)
+
+%.shbin.o %_shbin.h : %.shlist
+	@echo $(notdir $<)
+	@$(call shader-as,$(foreach file,$(shell cat $<),$(dir $<)$(file)))
+
+#---------------------------------------------------------------------------------
+%.t3x	%.h	:	%.t3s
+#---------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@tex3ds -i $< -H $*.h -d $*.d -o $*.t3x
+
+-include $(DEPSDIR)/*.d
+
+#---------------------------------------------------------------------------------------
+endif
+#---------------------------------------------------------------------------------------

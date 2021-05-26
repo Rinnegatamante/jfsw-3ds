@@ -3,6 +3,9 @@
 *.a
 *.res
 *.exe
+*.3dsx
+*.cia
+*.elf
 *.map
 *.log
 *.grp

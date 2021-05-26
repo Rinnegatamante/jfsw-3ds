@@ -239,7 +239,80 @@ static char * mouseclickeddefaults_modern[MAXMOUSEBUTTONS] =
    ""
    };
 
+#ifdef _3DS
+static char * joystickdefaults[MAXJOYBUTTONS] =
+   {
+   "Fire",            // A
+   "Crouch",          // B
+   "Jump",            // X
+   "Open",            // Y
+   "Aim_Up",          // LT
+   "Aim_Down",        // RT
+   "Previous_Weapon", // ZL
+   "Next_Weapon",     // ZR
+   "",                // 
+   "Show_Menu",       // Start
+   "Map",             // Select
+   "Inventory",       // DP up
+   "Holster_Weapon",  // DP down
+   "Inventory_Left",  // DP left
+   "Inventory_Right", // DP right
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   };
 
+
+static char * joystickclickeddefaults[MAXJOYBUTTONS] =
+   {
+   "",            // A
+   "",            // B
+   "",            // X
+   "",            // Y
+   "",            // Back
+   "",            // Guide
+   "",            // Start
+   "",            // L thumb
+   "",            // R thumb
+   "",            // L shoulder
+   "",            // R shoulder
+   "",            // DP up
+   "",            // DP down
+   "",            // DP left
+   "",            // DP right
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   };
+#else
 static char * joystickdefaults[MAXJOYBUTTONS] =
    {
    "Fire",        // A
@@ -312,7 +385,7 @@ static char * joystickclickeddefaults[MAXJOYBUTTONS] =
    "",
    "",
    };
-
+#endif
 
 static char * joystickdefaults_modern[MAXJOYBUTTONS] =
    {
@@ -387,13 +460,19 @@ static char * joystickclickeddefaults_modern[MAXJOYBUTTONS] =
    "",
    };
 
-
+#ifdef _3DS
+static char * mouseanalogdefaults[MAXMOUSEAXES] =
+   {
+   "analog_turning",
+   "analog_lookingupanddown",
+   };
+#else
 static char * mouseanalogdefaults[MAXMOUSEAXES] =
    {
    "analog_turning",
    "analog_moving",
    };
-
+#endif
 
 static char * mousedigitaldefaults[MAXMOUSEAXES*2] =
    {
@@ -403,7 +482,52 @@ static char * mousedigitaldefaults[MAXMOUSEAXES*2] =
    "",
    };
 
+#ifdef _3DS
+static char * joystickanalogdefaults[MAXJOYAXES] =
+   {
+   "analog_strafing",
+   "analog_moving",
+   "analog_turning",
+   "analog_lookingupanddown",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   };
 
+
+static char * joystickdigitaldefaults[MAXJOYAXES*2] =
+   {
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   };
+#else
 static char * joystickanalogdefaults[MAXJOYAXES] =
    {
    "analog_turning",
@@ -448,7 +572,7 @@ static char * joystickdigitaldefaults[MAXJOYAXES*2] =
    "",
    "",
    };
-
+#endif
 
 static char * joystickanalogdefaults_modern[MAXJOYAXES] =
    {
