@@ -2804,7 +2804,8 @@ MNU_GetSaveCustom(void)
     if (InMenuLevel)
         return(FALSE);
 #ifdef _3DS
-    if(ctr_swkbd("Enter save description..", SaveGameDescr[save_num], SaveGameDescr[save_num]));
+	int ret = (ctr_swkbd("Enter save description..", SaveGameDescr[save_num], SaveGameDescr[save_num]));
+	if (ret == 0)
     {
         strcpy(BackupSaveGameDescr, SaveGameDescr[save_num]);
 
