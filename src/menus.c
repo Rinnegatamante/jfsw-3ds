@@ -297,6 +297,24 @@ MenuItem joybuttons_i[MAXJOYSTICKBUTTONPAGES][20] =
         },
 
         {
+#ifdef _3DS
+        {DefLayer(0, "LT", &joybuttonsgroup),                                 OPT_XS, OPT_LINE(0), 1, m_defshade, joybutton_LeftShoulder,      NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_LeftShoulder][0]),  OPT_XSIDE, OPT_LINE(0), 1, m_defshade, joybutton_LeftShoulder,      NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "Dbl LT", &joybuttonsgroup),                             OPT_XS, OPT_LINE(1), 1, m_defshade, 128+joybutton_LeftShoulder,  NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_LeftShoulder][1]),  OPT_XSIDE, OPT_LINE(1), 1, m_defshade, 128+joybutton_LeftShoulder,  NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "RT", &joybuttonsgroup),                                 OPT_XS, OPT_LINE(2), 1, m_defshade, joybutton_RightShoulder,     NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_RightShoulder][0]), OPT_XSIDE, OPT_LINE(2), 1, m_defshade, joybutton_RightShoulder,     NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "Dbl RT", &joybuttonsgroup),                             OPT_XS, OPT_LINE(3), 1, m_defshade, 128+joybutton_RightShoulder, NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_RightShoulder][1]), OPT_XSIDE, OPT_LINE(3), 1, m_defshade, 128+joybutton_RightShoulder, NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "ZL", &joybuttonsgroup),                                 OPT_XS, OPT_LINE(4), 1, m_defshade, joybutton_LeftStick,         NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_LeftStick][0]),     OPT_XSIDE, OPT_LINE(4), 1, m_defshade, joybutton_LeftStick,         NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "Dbl ZL", &joybuttonsgroup),                             OPT_XS, OPT_LINE(5), 1, m_defshade, 128+joybutton_LeftStick,     NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_LeftStick][1]),     OPT_XSIDE, OPT_LINE(5), 1, m_defshade, 128+joybutton_LeftStick,     NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "ZR", &joybuttonsgroup),                                 OPT_XS, OPT_LINE(6), 1, m_defshade, joybutton_RightStick,        NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_RightStick][0]),    OPT_XSIDE, OPT_LINE(6), 1, m_defshade, joybutton_RightStick,        NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "Dbl ZR", &joybuttonsgroup),                             OPT_XS, OPT_LINE(7), 1, m_defshade, 128+joybutton_RightStick,    NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_RightStick][1]),    OPT_XSIDE, OPT_LINE(7), 1, m_defshade, 128+joybutton_RightStick,    NULL, MNU_SetJoystickButtonFunctions, NULL},
+#else
         {DefLayer(0, "Left stick", &joybuttonsgroup),                         OPT_XS, OPT_LINE(0), 1, m_defshade, joybutton_LeftStick,         NULL, NULL, MNU_JoystickButtonPostProcess},
         {DefInert(0, JoystickButtonFunctions[joybutton_LeftStick][0]),     OPT_XSIDE, OPT_LINE(0), 1, m_defshade, joybutton_LeftStick,         NULL, MNU_SetJoystickButtonFunctions, NULL},
         {DefLayer(0, "Dbl Left stick", &joybuttonsgroup),                     OPT_XS, OPT_LINE(1), 1, m_defshade, 128+joybutton_LeftStick,     NULL, NULL, MNU_JoystickButtonPostProcess},
@@ -313,7 +331,7 @@ MenuItem joybuttons_i[MAXJOYSTICKBUTTONPAGES][20] =
         {DefInert(0, JoystickButtonFunctions[joybutton_RightShoulder][0]), OPT_XSIDE, OPT_LINE(6), 1, m_defshade, joybutton_RightShoulder,     NULL, MNU_SetJoystickButtonFunctions, NULL},
         {DefLayer(0, "Dbl Rt shoulder", &joybuttonsgroup),                    OPT_XS, OPT_LINE(7), 1, m_defshade, 128+joybutton_RightShoulder, NULL, NULL, MNU_JoystickButtonPostProcess},
         {DefInert(0, JoystickButtonFunctions[joybutton_RightShoulder][1]), OPT_XSIDE, OPT_LINE(7), 1, m_defshade, 128+joybutton_RightShoulder, NULL, MNU_SetJoystickButtonFunctions, NULL},
-
+#endif
         {DefInert(0, "Page 2 / 4"),                          OPT_XS, OPT_LINE(10), 1, m_defshade, 0, NULL, NULL, NULL },
         {DefOption(0, "Next..."),                         OPT_XSIDE, OPT_LINE(10), 1, m_defshade, 0, MNU_JoystickButtonNextPage, NULL, NULL },
         {DefNone}
@@ -343,6 +361,16 @@ MenuItem joybuttons_i[MAXJOYSTICKBUTTONPAGES][20] =
         },
 
         {
+#ifdef _3DS
+        {DefLayer(0, "Back", &joybuttonsgroup),                       OPT_XS, OPT_LINE(0), 1, m_defshade, joybutton_Back,      NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_Back][0]),  OPT_XSIDE, OPT_LINE(0), 1, m_defshade, joybutton_Back,      NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "Dbl Back", &joybuttonsgroup),                   OPT_XS, OPT_LINE(1), 1, m_defshade, 128+joybutton_Back,  NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_Back][1]),  OPT_XSIDE, OPT_LINE(1), 1, m_defshade, 128+joybutton_Back,  NULL, MNU_SetJoystickButtonFunctions, NULL},
+       {DefLayer(0, "Start", &joybuttonsgroup),                       OPT_XS, OPT_LINE(2), 1, m_defshade, joybutton_Start,     NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_Start][0]), OPT_XSIDE, OPT_LINE(2), 1, m_defshade, joybutton_Start,     NULL, MNU_SetJoystickButtonFunctions, NULL},
+        {DefLayer(0, "Dbl Start", &joybuttonsgroup),                  OPT_XS, OPT_LINE(3), 1, m_defshade, 128+joybutton_Start, NULL, NULL, MNU_JoystickButtonPostProcess},
+        {DefInert(0, JoystickButtonFunctions[joybutton_Start][1]), OPT_XSIDE, OPT_LINE(3), 1, m_defshade, 128+joybutton_Start, NULL, MNU_SetJoystickButtonFunctions, NULL},
+#else
         {DefLayer(0, "Back", &joybuttonsgroup),                       OPT_XS, OPT_LINE(0), 1, m_defshade, joybutton_Back,      NULL, NULL, MNU_JoystickButtonPostProcess},
         {DefInert(0, JoystickButtonFunctions[joybutton_Back][0]),  OPT_XSIDE, OPT_LINE(0), 1, m_defshade, joybutton_Back,      NULL, MNU_SetJoystickButtonFunctions, NULL},
         {DefLayer(0, "Dbl Back", &joybuttonsgroup),                   OPT_XS, OPT_LINE(1), 1, m_defshade, 128+joybutton_Back,  NULL, NULL, MNU_JoystickButtonPostProcess},
@@ -355,7 +383,7 @@ MenuItem joybuttons_i[MAXJOYSTICKBUTTONPAGES][20] =
         {DefInert(0, JoystickButtonFunctions[joybutton_Start][0]), OPT_XSIDE, OPT_LINE(4), 1, m_defshade, joybutton_Start,     NULL, MNU_SetJoystickButtonFunctions, NULL},
         {DefLayer(0, "Dbl Start", &joybuttonsgroup),                  OPT_XS, OPT_LINE(5), 1, m_defshade, 128+joybutton_Start, NULL, NULL, MNU_JoystickButtonPostProcess},
         {DefInert(0, JoystickButtonFunctions[joybutton_Start][1]), OPT_XSIDE, OPT_LINE(5), 1, m_defshade, 128+joybutton_Start, NULL, MNU_SetJoystickButtonFunctions, NULL},
-
+#endif
         {DefInert(0, "Page 4 / 4"),                          OPT_XS, OPT_LINE(10), 1, m_defshade, 0, NULL, NULL, NULL },
         {DefOption(0, "Next..."),                         OPT_XSIDE, OPT_LINE(10), 1, m_defshade, 0, MNU_JoystickButtonNextPage, NULL, NULL },
         {DefNone}
@@ -425,7 +453,9 @@ MenuGroup mouseaxesgroup = {65, 5, "^Mouse Axes", mouseaxes_i, pic_newgametitl, 
 
 MenuItem inputsetup_i[] =
     {
+#ifndef _3DS
     {DefLayer(0, "Keys Setup", &keysetupgroup),OPT_XS,                 OPT_LINE(0),1,m_defshade,0,NULL,NULL,NULL},
+#endif
     {DefLayer(0, "Mouse Options", &mousegroup),OPT_XS,                 OPT_LINE(2), 1, m_defshade,0,NULL, MNU_MouseCheck, NULL},
     {DefLayer(0, "Mouse Buttons Setup", &mousesetupgroup),OPT_XS,      OPT_LINE(3),1,m_defshade,0,NULL,NULL,NULL},
     {DefLayer(0, "Mouse Axes Setup", &mouseaxesgroup),OPT_XS,          OPT_LINE(4),1,m_defshade,0,NULL,NULL,NULL},
@@ -2773,7 +2803,27 @@ MNU_GetSaveCustom(void)
 
     if (InMenuLevel)
         return(FALSE);
+#ifdef _3DS
+    if(ctr_swkbd("Enter save description..", SaveGameDescr[save_num], SaveGameDescr[save_num]));
+    {
+        strcpy(BackupSaveGameDescr, SaveGameDescr[save_num]);
 
+        PauseAction();
+
+        LoadSaveMsg("Saving...");
+
+        if (SaveGame(save_num) != -1)
+            {
+            QuickLoadNum = save_num;
+
+            LoadGameGroup.cursor = save_num;
+            LastSaveNum = -1;
+            }
+
+        ResumeAction();
+        ExitMenus();
+    }
+#else
     if (MenuInputMode)
         {
         PauseAction();
@@ -2808,6 +2858,7 @@ MNU_GetSaveCustom(void)
         // toggle edit mode
         MenuInputMode = TRUE;
         }
+#endif
 
     return (TRUE);
     }

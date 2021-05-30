@@ -246,71 +246,54 @@ static char * joystickdefaults[MAXJOYBUTTONS] =
    "Crouch",          // B
    "Jump",            // X
    "Open",            // Y
-   "Aim_Up",          // LT
-   "Aim_Down",        // RT
+   "Map",             // Select
+   "",                //
+   "Show_Menu",       // Start
    "Previous_Weapon", // ZL
    "Next_Weapon",     // ZR
-   "",                // 
-   "Show_Menu",       // Start
-   "Map",             // Select
+   "Jump",            // LT
+   "Fire",            // RT
    "Inventory",       // DP up
    "Holster_Weapon",  // DP down
    "Inventory_Left",  // DP left
    "Inventory_Right", // DP right
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
    };
 
+/*
+   joybutton_A,
+   joybutton_B,
+   joybutton_X,
+   joybutton_Y,
+   joybutton_Back,
+   joybutton_Guide,
+   joybutton_Start,
+   joybutton_LeftStick,
+   joybutton_RightStick,
+   joybutton_LeftShoulder,
+   joybutton_RightShoulder,
+   joybutton_DpadUp,
+   joybutton_DpadDown,
+   joybutton_DpadLeft,
+   joybutton_DpadRight
+*/
 
 static char * joystickclickeddefaults[MAXJOYBUTTONS] =
    {
-   "",            // A
-   "",            // B
-   "",            // X
-   "",            // Y
-   "",            // Back
-   "",            // Guide
-   "",            // Start
-   "",            // L thumb
-   "",            // R thumb
-   "",            // L shoulder
-   "",            // R shoulder
-   "",            // DP up
-   "",            // DP down
-   "",            // DP left
-   "",            // DP right
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "",
+   "",                // A
+   "",                // B
+   "",                // X
+   "",                // Y
+   "",                // LT
+   "",                // RT
+   "",                // ZL
+   "",                // ZR
+   "",                //
+   "",                // Start
+   "",                // Select
+   "",                // DP up
+   "",                // DP down
+   "",                // DP left
+   "",                // DP right
    };
 #else
 static char * joystickdefaults[MAXJOYBUTTONS] =

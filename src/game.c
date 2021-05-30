@@ -1447,23 +1447,18 @@ InitLevel(VOID)
     PlayerPanelSetup();
     MapSetup();
     SectorSetup();
-#ifdef _3DS
-    printf("JS_InitMirrors fails\n");
-#else
+
     JS_InitMirrors();
-#endif
+
     JS_InitLockouts();   // Setup the lockout linked lists
     JS_ToggleLockouts(); // Init lockouts on/off
 
     PlaceSectorObjectsOnTracks();
     PlaceActorsOnTracks();
     PostSetupSectorObject();
-#ifdef _3DS
-    printf("SetupMirrorTiles fails\n");
-//    svcSleepThread(10000);
-#else
+
     SetupMirrorTiles();
-#endif
+
     initlava();
 
     SongLevelNum = Level;
@@ -2937,7 +2932,9 @@ Control(VOID)
     {
 
     InitGame();
-
+#ifdef _3DS
+	ctr_clear_console();
+#endif
         MONO_PRINT("InitGame done");
     MNU_InitMenus();
     InGame = TRUE;
@@ -3522,9 +3519,9 @@ int app_main(int argc, char const * const argv[])
             free(supportdir);
         }
     }
-
+#ifndef _3DS
     buildsetlogfile("sw.log");
-
+#endif
     OSD_RegisterFunction("restartvid", "restartvid: reinitialise the video mode", osdcmd_restartvid);
     OSD_RegisterFunction("vidmode", "vidmode [xdim ydim] [bpp] [fullscreen]: change the video mode", osdcmd_vidmode);
 

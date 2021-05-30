@@ -253,7 +253,11 @@ void CONFIG_SetDefaults( void )
    for (i=0; i < MAXJOYAXES; i++) {
       JoystickAnalogScale[i] = 65536;
       JoystickAnalogDead[i] = 1024;
+#ifdef _3DS
+      JoystickAnalogSaturate[i] = ( i < 2 ) ? 16384 : 24576;
+#else
       JoystickAnalogSaturate[i] = 32767-1024;
+#endif
       CONTROL_SetAnalogAxisScale( i, JoystickAnalogScale[i], controldevice_joystick );
       CONTROL_SetJoyAxisDead(i, JoystickAnalogDead[i]);
       CONTROL_SetJoyAxisSaturate(i, JoystickAnalogSaturate[i]);
