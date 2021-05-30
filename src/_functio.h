@@ -259,24 +259,6 @@ static char * joystickdefaults[MAXJOYBUTTONS] =
    "Inventory_Right", // DP right
    };
 
-/*
-   joybutton_A,
-   joybutton_B,
-   joybutton_X,
-   joybutton_Y,
-   joybutton_Back,
-   joybutton_Guide,
-   joybutton_Start,
-   joybutton_LeftStick,
-   joybutton_RightStick,
-   joybutton_LeftShoulder,
-   joybutton_RightShoulder,
-   joybutton_DpadUp,
-   joybutton_DpadDown,
-   joybutton_DpadLeft,
-   joybutton_DpadRight
-*/
-
 static char * joystickclickeddefaults[MAXJOYBUTTONS] =
    {
    "",                // A
