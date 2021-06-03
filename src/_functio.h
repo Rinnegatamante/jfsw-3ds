@@ -265,13 +265,13 @@ static char * joystickclickeddefaults[MAXJOYBUTTONS] =
    "",                // B
    "",                // X
    "",                // Y
-   "",                // LT
-   "",                // RT
-   "",                // ZL
-   "",                // ZR
+   "",                // Select
    "",                //
    "",                // Start
-   "",                // Select
+   "",                // ZL
+   "",                // ZR
+   "",                // LT
+   "",                // RT
    "",                // DP up
    "",                // DP down
    "",                // DP left

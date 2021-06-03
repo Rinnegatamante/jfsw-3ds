@@ -3144,7 +3144,7 @@ VOID InitRunLevel(VOID)
 
     // auto aim / auto run / etc
     InitPlayerGameSettings();
-#ifndef _3DS
+
     // send packets with player info
     InitNetPlayerOptions();
 
@@ -3160,7 +3160,7 @@ VOID InitRunLevel(VOID)
         }
         PlaySong(LevelSong, track, TRUE, TRUE);
     }
-#endif
+
     InitPrediction(&Player[myconnectindex]);
 
     if (!DemoInitOnce)
