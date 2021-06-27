@@ -1,0 +1,172 @@
+TARGET		:= jfsw
+TITLE		:= SHDWWRR32
+GIT_VERSION := $(shell git describe --abbrev=6 --dirty --always --tags)
+SHADERS     := shaders
+
+LIBS = -lvorbisfile -lvorbis -logg  -lspeexdsp -lmpg123 \
+	-lSDL2 -lc -lSceCommonDialog_stub -lSceAudio_stub -lSceLibKernel_stub -lmathneon \
+	-lSceNet_stub -lSceNetCtl_stub -lpng -lSceDisplay_stub -lSceGxm_stub -lSceHid_stub \
+	-lSceSysmodule_stub -lSceCtrl_stub -lSceTouch_stub -lSceMotion_stub -lm -lSceAppMgr_stub \
+	-lSceAppUtil_stub -lScePgf_stub -ljpeg -lSceRtc_stub -lScePower_stub -lcurl -lssl -lcrypto -lz \
+
+# build locations
+SRC=src
+EINC=$(EROOT)/include
+ELIB=$(EROOT)
+
+#engine
+EROOT ?= jfbuild
+ESRC ?= $(EROOT)/src
+
+MACTROOT ?= jfmact
+AUDIOSRC = jfaudiolib/src
+
+JFBUILDOBJS = \
+	$(ESRC)/a-c.o \
+  	$(ESRC)/asmprot.o \
+	$(ESRC)/baselayer.o \
+	$(ESRC)/cache1d.o \
+	$(ESRC)/compat.o \
+	$(ESRC)/crc32.o \
+	$(ESRC)/defs.o \
+	$(ESRC)/engine.o \
+	$(ESRC)/kplib.o \
+	$(ESRC)/osd.o \
+	$(ESRC)/pragmas.o \
+	$(ESRC)/scriptfile.o \
+	$(ESRC)/sdlayer2.o \
+	$(ESRC)/textfont.o \
+	$(ESRC)/smalltextfont.o \
+	$(ESRC)/mmulti_null.o \
+	$(ESRC)/version.o
+	
+JFMACTOBJS = \
+	$(MACTROOT)/util_lib.o \
+	$(MACTROOT)/file_lib.o \
+	$(MACTROOT)/control.o \
+	$(MACTROOT)/keyboard.o \
+	$(MACTROOT)/mouse.o \
+	$(MACTROOT)/mathutil.o \
+	$(MACTROOT)/scriplib.o \
+	$(MACTROOT)/animlib.o
+
+JFAUDIOLIBOBJS= \
+	$(AUDIOSRC)/drivers.o \
+	$(AUDIOSRC)/fx_man.o \
+	$(AUDIOSRC)/cd.o \
+	$(AUDIOSRC)/multivoc.o \
+	$(AUDIOSRC)/mix.o \
+	$(AUDIOSRC)/mixst.o \
+	$(AUDIOSRC)/pitch.o \
+	$(AUDIOSRC)/vorbis.o \
+	$(AUDIOSRC)/music.o \
+	$(AUDIOSRC)/midi.o \
+	$(AUDIOSRC)/driver_sdl.o \
+	$(AUDIOSRC)/driver_nosound.o \
+	$(AUDIOSRC)/asssys.o
+
+GAMEOBJS = \
+	$(SRC)/actor.o \
+	$(SRC)/ai.o \
+	$(SRC)/anim.o \
+	$(SRC)/border.o \
+	$(SRC)/break.o \
+	$(SRC)/bunny.o \
+	$(SRC)/cache.o \
+	$(SRC)/cheats.o \
+	$(SRC)/colormap.o \
+	$(SRC)/config.o \
+	$(SRC)/console.o \
+	$(SRC)/coolg.o \
+	$(SRC)/coolie.o \
+	$(SRC)/copysect.o \
+	$(SRC)/demo.o \
+	$(SRC)/draw.o \
+	$(SRC)/eel.o \
+	$(SRC)/game.o \
+	$(SRC)/girlninj.o \
+	$(SRC)/goro.o \
+	$(SRC)/grpscan.o \
+	$(SRC)/hornet.o \
+	$(SRC)/interp.o \
+	$(SRC)/interpsh.o \
+	$(SRC)/inv.o \
+	$(SRC)/jplayer.o \
+	$(SRC)/jsector.o \
+	$(SRC)/jweapon.o \
+	$(SRC)/lava.o \
+	$(SRC)/light.o \
+	$(SRC)/mclip.o \
+	$(SRC)/menus.o \
+	$(SRC)/miscactr.o \
+	$(SRC)/morph.o \
+	$(SRC)/net.o \
+	$(SRC)/ninja.o \
+	$(SRC)/panel.o \
+	$(SRC)/player.o \
+	$(SRC)/predict.o \
+	$(SRC)/quake.o \
+	$(SRC)/ripper.o \
+	$(SRC)/ripper2.o \
+	$(SRC)/rooms.o \
+	$(SRC)/rotator.o \
+	$(SRC)/rts.o \
+	$(SRC)/save.o \
+	$(SRC)/scrip2.o \
+	$(SRC)/sector.o \
+	$(SRC)/serp.o \
+	$(SRC)/setup.o \
+	$(SRC)/skel.o \
+	$(SRC)/skull.o \
+	$(SRC)/slidor.o \
+	$(SRC)/sounds.o \
+	$(SRC)/spike.o \
+	$(SRC)/sprite.o \
+	$(SRC)/sumo.o \
+	$(SRC)/swconfig.o \
+	$(SRC)/sync.o \
+	$(SRC)/text.o \
+	$(SRC)/track.o \
+	$(SRC)/vator.o \
+	$(SRC)/version.o \
+	$(SRC)/vis.o \
+	$(SRC)/wallmove.o \
+	$(SRC)/warp.o \
+	$(SRC)/weapon.o \
+	$(SRC)/zilla.o \
+	$(SRC)/zombie.o \
+	$(SRC)/saveable.o
+
+OBJS     := $(GAMEOBJS) $(JFBUILDOBJS) $(JFAUDIOLIBOBJS) $(JFMACTOBJS)
+
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+CXX      = $(PREFIX)-g++
+CFLAGS  = -fsigned-char -Wl,-q,--wrap,fopen -O3 -g -fno-optimize-sibling-calls \
+	-ffast-math -mtune=cortex-a9 -mfpu=neon -DHAVE_VORBIS -Isrc \
+	-Ijfbuild/include -Ijfmact -Ijfaudiolib/include -DVITA \
+	-Wno-implicit-function-declaration -I$(VITASDK)/$(PREFIX)/include/SDL2
+CXXFLAGS  = $(CFLAGS) -fno-exceptions -std=gnu++11
+ASFLAGS = $(CFLAGS)
+
+all: $(TARGET).vpk
+
+$(TARGET).vpk: $(TARGET).velf
+	vita-make-fself -c -s $< build/eboot.bin
+	vita-mksfoex -s TITLE_ID=$(TITLE) -d ATTRIBUTE2=12 "Shadow Warrior" param.sfo
+	cp -f param.sfo build/sce_sys/param.sfo
+
+	#------------ Comment this if you don't have 7zip ------------------
+	7z a -tzip ./$(TARGET).vpk -r ./build/sce_sys ./build/eboot.bin ./build/shaders
+	#-------------------------------------------------------------------
+	
+%.velf: %.elf
+	cp $< $<.unstripped.elf
+	$(PREFIX)-strip -g $<
+	vita-elf-create $< $@
+
+$(TARGET).elf: $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+
+clean:
+	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS) $(TARGET).elf.unstripped.elf $(TARGET).vpk build/eboot.bin build/sce_sys/param.sfo ./param.sfo

@@ -45,6 +45,21 @@ Things required to make savegames work:
 #include "baselayer.h"
 #include "cache1d.h"
 #include "osd.h"
+#ifdef VITA
+#define MAX_CURDIR_PATH 512
+char cur_dir[MAX_CURDIR_PATH] = "ux0:data/jfsw/";
+
+char *Bgetcwd(char *buf, bsize_t size)
+{
+	if (buf != NULL) {
+        strncpy(buf, cur_dir, size);
+    }
+    return cur_dir;
+}
+int chdir(const char *path) {
+    return 0;
+}
+#endif
 #ifdef RENDERTYPEWIN
 # include "winlayer.h"
 #endif
@@ -825,6 +840,8 @@ void Set_GameMode(void)
     //MONO_PRINT(ds);
 #ifdef _3DS
     result = COVERsetgamemode(ScreenMode, 400, 240, ScreenBPP);
+#elif defined(VITA)
+	result = COVERsetgamemode(ScreenMode, 960, 544, ScreenBPP);
 #else
     result = COVERsetgamemode(ScreenMode, ScreenWidth, ScreenHeight, ScreenBPP);
 #endif
@@ -3490,7 +3507,7 @@ int app_main(int argc, char const * const argv[])
     // "portable" by writing into the working directory
     if (access("user_profiles_disabled", F_OK) == 0) {
         char cwd[BMAX_PATH+1];
-        if (getcwd(cwd, sizeof(cwd))) {
+        if (Bgetcwd(cwd, sizeof(cwd))) {
             addsearchpath(cwd);
         }
     } else {
@@ -3507,7 +3524,7 @@ int app_main(int argc, char const * const argv[])
             Bsnprintf(dirpath, sizeof(dirpath), "%s/%s", supportdir, confdir);
             asperr = addsearchpath(dirpath);
             if (asperr == -2) {
-                if (Bmkdir(dirpath, S_IRWXU) == 0) {
+                if (sceIoMkdir(dirpath, 0777) == 0) {
                     asperr = addsearchpath(dirpath);
                 } else {
                     asperr = -1;
@@ -3519,9 +3536,7 @@ int app_main(int argc, char const * const argv[])
             free(supportdir);
         }
     }
-#ifndef _3DS
     buildsetlogfile("sw.log");
-#endif
     OSD_RegisterFunction("restartvid", "restartvid: reinitialise the video mode", osdcmd_restartvid);
     OSD_RegisterFunction("vidmode", "vidmode [xdim ydim] [bpp] [fullscreen]: change the video mode", osdcmd_vidmode);
 
