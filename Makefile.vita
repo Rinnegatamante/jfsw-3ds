@@ -142,9 +142,10 @@ OBJS     := $(GAMEOBJS) $(JFBUILDOBJS) $(JFAUDIOLIBOBJS) $(JFMACTOBJS)
 PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-gcc
 CXX      = $(PREFIX)-g++
-CFLAGS  = -fsigned-char -Wl,-q,--wrap,fopen -O3 -g -fno-optimize-sibling-calls \
+CFLAGS  = -fsigned-char -Wl,-q,--wrap,fopen,--wrap,opendir,--wrap,open,--wrap,access \
+	-O3 -g -fno-optimize-sibling-calls \
 	-ffast-math -mtune=cortex-a9 -mfpu=neon -DHAVE_VORBIS -Isrc \
-	-Ijfbuild/include -Ijfmact -Ijfaudiolib/include -DVITA \
+	-Ijfbuild/include -Ijfmact -Ijfaudiolib/include -DVITA -DHAVE_SDL \
 	-Wno-implicit-function-declaration -I$(VITASDK)/$(PREFIX)/include/SDL2
 CXXFLAGS  = $(CFLAGS) -fno-exceptions -std=gnu++11
 ASFLAGS = $(CFLAGS)
