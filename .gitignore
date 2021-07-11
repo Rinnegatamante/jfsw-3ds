@@ -1,3 +1,5 @@
+*.sfo
+*.bin
 *.o
 *.obj
 *.a
@@ -27,5 +29,4 @@
 /Makefile.*user
 
 /sw
-/build
 /grpfiles.cache
