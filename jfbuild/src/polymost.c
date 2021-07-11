@@ -618,8 +618,8 @@ static void polymost_loadshaders(void)
 	if (shader[0] && shader[1]) {
 		polymostglsl.program = glbuild_link_program(2, shader);
 	}
-	if (shader[0]) glfunc.glDeleteShader(shader[0]);
-	if (shader[1]) glfunc.glDeleteShader(shader[1]);
+	//if (shader[0]) glfunc.glDeleteShader(shader[0]);
+	//if (shader[1]) glfunc.glDeleteShader(shader[1]);
 
 	if (polymostglsl.program) {
 		polymostglsl.attrib_vertex       = polymost_get_attrib(polymostglsl.program, "a_vertex");
@@ -669,8 +669,8 @@ static void polymost_loadshaders(void)
 	if (shader[0] && shader[1]) {
 		polymostauxglsl.program = glbuild_link_program(2, shader);
 	}
-	if (shader[0]) glfunc.glDeleteShader(shader[0]);
-	if (shader[1]) glfunc.glDeleteShader(shader[1]);
+	///if (shader[0]) glfunc.glDeleteShader(shader[0]);
+	//if (shader[1]) glfunc.glDeleteShader(shader[1]);
 
 	if (polymostauxglsl.program) {
 		polymostauxglsl.attrib_vertex    = polymost_get_attrib(polymostauxglsl.program, "a_vertex");

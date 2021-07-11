@@ -164,7 +164,7 @@ static GLchar *glbuild_cook_source(const GLchar *source, const char *spec)
 	int keep;
 
 	cooked = strdup(source);
-	if (!cooked) {
+	/*if (!cooked) {
 		debugprintf("glbuild_cook_source: couldn't duplicate source\n");
 		return NULL;
 	}
@@ -184,7 +184,7 @@ static GLchar *glbuild_cook_source(const GLchar *source, const char *spec)
 			for (; *match && *match != '\n' && *match != '\r'; match++) *match = ' ';
 		}
 		pos = end;
-	} while(pos);
+	} while(pos);*/
 
 	return cooked;
 }
@@ -354,8 +354,8 @@ int glbuild_prepare_8bit_shader(glbuild8bit *state, int resx, int resy, int stri
 	}
 
 	// Shaders were detached in glbuild_link_program.
-	glfunc.glDeleteShader(shaders[0]);
-	glfunc.glDeleteShader(shaders[1]);
+//	glfunc.glDeleteShader(shaders[0]);
+//	glfunc.glDeleteShader(shaders[1]);
 
 	// Connect the textures to the program.
 	glfunc.glUseProgram(prog);
