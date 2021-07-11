@@ -1405,6 +1405,7 @@ static SDL_Surface * loadappicon(void)
 //
 //
 
+int old_up = 0, old_down = 0;
 
 //
 // handleevents() -- process the SDL message queue
@@ -1425,7 +1426,17 @@ int handleevents(void)
 	keyfifoend = ((keyfifoend+2)&(KEYFIFOSIZ-1)); \
 		} \
 }
-
+	if (old_up)
+		if (old_up > 3)
+			joyb &= ~(1 << SDL_CONTROLLER_BUTTON_DPAD_UP);
+		else
+			old_up++;
+	if (old_down)
+		if (old_down > 3)
+			joyb &= ~(1 << SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+		else
+			old_down++;
+	
 	while (SDL_PollEvent(&ev)) {
 		switch (ev.type) {
 			case SDL_TEXTINPUT:
@@ -1512,7 +1523,7 @@ int handleevents(void)
 					rv=-1;
 				}
 				break;
-
+			/*
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
 				switch (ev.button.button) {
@@ -1556,7 +1567,7 @@ int handleevents(void)
 					}
 				}
 				break;
-
+			*/
 			case SDL_CONTROLLERAXISMOTION:
 				if (appactive) {
 					joyaxis[ ev.caxis.axis ] = ev.caxis.value;
@@ -1564,12 +1575,24 @@ int handleevents(void)
 				break;
 
 			case SDL_CONTROLLERBUTTONDOWN:
+				if (appactive) {
+					if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) {
+						if (!old_up)
+							old_up = 1;
+					}else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)	{
+						if (!old_down)
+							old_down = 1;
+					}
+					joyb |= 1 << ev.cbutton.button;
+				}
+				break;
 			case SDL_CONTROLLERBUTTONUP:
 				if (appactive) {
-					if (ev.cbutton.state == SDL_PRESSED)
-						joyb |= 1 << ev.cbutton.button;
-					else
-						joyb &= ~(1 << ev.cbutton.button);
+					joyb &= ~(1 << ev.cbutton.button);
+					if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
+						old_up = 0;
+					else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+						old_down = 0;
 				}
 				break;
 
