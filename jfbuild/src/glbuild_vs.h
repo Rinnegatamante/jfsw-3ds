@@ -1,4 +1,4 @@
-#glbuild(ES2) #version 100
+/*#glbuild(ES2) #version 100
 #glbuild(2)   #version 110
 #glbuild(3)   #version 140
 
@@ -18,4 +18,17 @@ void main(void)
 {
   v_texcoord = a_texcoord;
   gl_Position = vec4(a_vertex, 0.0, 1.0);
+}*/
+
+const char *default_glbuild_vs_glsl = 
+R"(
+void main(
+	float2 a_vertex,
+	float2 a_texcoord,
+	float2 out v_texcoord : TEXCOORD0,
+	float4 out v_pos : POSITION)
+{
+	v_texcoord = a_texcoord;
+	v_pos = float4(a_vertex, 0.0f, 1.0f);
 }
+)";

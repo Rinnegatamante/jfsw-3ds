@@ -8,6 +8,9 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "glbuild_fs.h"
+#include "glbuild_vs.h"
+
 struct glbuild_funcs glfunc;
 
 static inline void * getproc_(const char *func, int *err, int fatal)
@@ -277,8 +280,8 @@ int glbuild_prepare_8bit_shader(glbuild8bit *state, int resx, int resy, int stri
 	GLuint shaders[2] = {0,0}, prog = 0;
 	GLint status = 0;
 
-	extern const char default_glbuild_fs_glsl[];
-	extern const char default_glbuild_vs_glsl[];
+	//->extern const char default_glbuild_fs_glsl[];
+	//-<extern const char default_glbuild_vs_glsl[];
 
 	float tx = (float)resx / (float)stride, ty = 1.0;
 	int tsizx = stride, tsizy = resy;
