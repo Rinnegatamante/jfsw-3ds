@@ -58,9 +58,9 @@ R"(float4 main(
         // Tile screen.
         pixel = tex2D(u_texture, v_texcoord);
         return lerp(u_bgcolour, pixel, pixel.a);
-    } else if (u_mode == 2) {
-        // Foreground colour.
-        return u_colour;
     }
+	
+    // Foreground colour.
+    return u_colour;
 }
 )";

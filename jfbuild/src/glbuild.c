@@ -8,6 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#define GL_RED                                       0x1903
+
 #include "glbuild_fs.h"
 #include "glbuild_vs.h"
 
@@ -49,7 +51,7 @@ int glbuild_loadfunctions(void)
 #endif
 	INIT_PROC(glGetError);
 	INIT_PROC(glHint);
-	INIT_PROC(glPixelStorei);
+	//INIT_PROC(glPixelStorei);
 	INIT_PROC(glViewport);
 	INIT_PROC(glScissor);
 
@@ -100,7 +102,7 @@ int glbuild_loadfunctions(void)
 	INIT_PROC(glCreateShader);
 	INIT_PROC(glDeleteProgram);
 	INIT_PROC(glDeleteShader);
-	INIT_PROC(glDetachShader);
+	//INIT_PROC(glDetachShader);
 	INIT_PROC(glGetAttribLocation);
 	INIT_PROC(glGetProgramiv);
 	INIT_PROC(glGetProgramInfoLog);
@@ -269,7 +271,7 @@ GLuint glbuild_link_program(int shadercount, GLuint *shaders)
 	}
 
 	for (i = 0; i < shadercount; i++) {
-		glfunc.glDetachShader(program, shaders[i]);
+		//glfunc.glDetachShader(program, shaders[i]);
 	}
 
 	return program;
@@ -318,9 +320,9 @@ int glbuild_prepare_8bit_shader(glbuild8bit *state, int resx, int resy, int stri
 	glfunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp);
 
 #if (USE_OPENGL == USE_GLES2)
-	intfmt = GL_LUMINANCE;
+/*	intfmt = GL_LUMINANCE;
 	extfmt = GL_LUMINANCE;
-#else
+#else*/
 	intfmt = GL_RGB;
 	extfmt = GL_RED;
 #endif
@@ -334,7 +336,7 @@ int glbuild_prepare_8bit_shader(glbuild8bit *state, int resx, int resy, int stri
 	glfunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp);
 	glfunc.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp);
 
-	glfunc.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	//glfunc.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	// Prepare the vertex and fragment shaders.
 	shaders[0] = glbuild_compile_shader(GL_VERTEX_SHADER, default_glbuild_vs_glsl);
@@ -445,8 +447,8 @@ void glbuild_update_8bit_palette(glbuild8bit *state, const GLvoid *pal)
 void glbuild_update_8bit_frame(glbuild8bit *state, const GLvoid *frame, int resx, int resy, int stride)
 {
 #if (USE_OPENGL == USE_GLES2)
-	GLenum extfmt = GL_LUMINANCE;
-#else
+/*	GLenum extfmt = GL_LUMINANCE;
+#else*/
 	GLenum extfmt = GL_RED;
 #endif
 

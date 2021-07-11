@@ -49,6 +49,8 @@ void main(void)
 
 const char *default_polymost_fs_glsl =
 R"(uniform float u_fogdensity;
+uniform float4 u_colour;
+uniform float u_alphacut;
 uniform float4 u_fogcolour;
 float4 applyfog(float4 gl_FragCoord, float4 inputcolour) {
     const float LOG2_E = 1.442695;

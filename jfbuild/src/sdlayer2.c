@@ -305,6 +305,9 @@ int psp2_main(unsigned int argc, void *argv) {
 		buildprintf("Early initialisation of SDL failed! (%s)\n", SDL_GetError());
 		return 1;
 	}
+	
+	vglUseVram(GL_TRUE);
+	vglInitExtended(0, 960, 544, 2 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
     
     baselayer_init();
     
@@ -394,7 +397,7 @@ int initsystem(void)
 	atexit(uninitsystem);
 
 #if USE_OPENGL
-	if (getenv("BUILD_NOGL")) {
+	/*if (getenv("BUILD_NOGL")) {
 		buildputs("OpenGL disabled.\n");
 		nogl = 1;
 	} else {
@@ -402,7 +405,7 @@ int initsystem(void)
 		if (nogl) {
 			buildputs("Failed loading OpenGL driver. GL modes will be unavailable.\n");
 		}
-	}
+	}*/
 
 	OSD_RegisterFunction("glswapinterval", "glswapinterval: frame swap interval for OpenGL modes (0 = no vsync, max 2)", set_glswapinterval);
 #endif
@@ -1011,7 +1014,7 @@ int setvideomode(int x, int y, int c, int fs)
 		flags = SDL_WINDOW_HIDDEN;
 
 #if USE_OPENGL
-		if (!nogl) {
+/*		if (!nogl) {
 #if (USE_OPENGL == USE_GLES2)
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -1034,7 +1037,7 @@ int setvideomode(int x, int y, int c, int fs)
 #endif
 
 			flags |= SDL_WINDOW_OPENGL;
-		}
+		}*/
 #endif
 
 		if (fs & 1) {
@@ -1105,7 +1108,10 @@ int setvideomode(int x, int y, int c, int fs)
 #if USE_OPENGL
 		} else {
 			// Prepare the GLSL shader for 8-bit blitting.
-			sdl_glcontext = SDL_GL_CreateContext(sdl_window);
+			baselayer_setupopengl();
+			//sdl_glcontext = SDL_GL_CreateContext(sdl_window);
+			glbuild_prepare_8bit_shader(&gl8bit, x, y, pitch);
+			/*
 			if (!sdl_glcontext) {
 				buildprintf("Error creating OpenGL context: %s\n", SDL_GetError());
 				nogl = 1;
@@ -1118,7 +1124,7 @@ int setvideomode(int x, int y, int c, int fs)
 				// Try again but without OpenGL.
 				buildputs("Falling back to non-OpenGL render.\n");
 				return setvideomode(x, y, c, fs);
-			}
+			}*/
 		}
 #endif
 
@@ -1141,11 +1147,11 @@ int setvideomode(int x, int y, int c, int fs)
 
 	} else {
 #if USE_OPENGL
-		sdl_glcontext = SDL_GL_CreateContext(sdl_window);
+		/*sdl_glcontext = SDL_GL_CreateContext(sdl_window);
 		if (!sdl_glcontext) {
 			buildprintf("Error creating OpenGL context: %s\n", SDL_GetError());
 			return -1;
-		}
+		}*/
 
 		if (baselayer_setupopengl()) {
 			shutdownvideo();
@@ -1174,11 +1180,11 @@ int setvideomode(int x, int y, int c, int fs)
 	videomodereset = 0;
 	OSD_ResizeDisplay(xres,yres);
 #if USE_OPENGL
-	if (sdl_glcontext) {
+	/*if (sdl_glcontext) {
 		if (SDL_GL_SetSwapInterval(glswapinterval) < 0) {
 			buildputs("note: OpenGL swap interval could not be changed\n");
 		}
-	}
+	}*/
 #endif
 
 	gammabrightness = (SDL_SetWindowBrightness(sdl_window, curgamma) == 0);
@@ -1236,8 +1242,9 @@ void showframe(void)
 			glbuild_update_8bit_frame(&gl8bit, frame, xres, yres, bytesperline);
 			glbuild_draw_8bit_frame(&gl8bit);
 		}
-
-		SDL_GL_SwapWindow(sdl_window);
+		
+		vglSwapBuffers(GL_FALSE);
+		//SDL_GL_SwapWindow(sdl_window);
 		return;
 	}
 #endif
@@ -1348,19 +1355,19 @@ int setgamma(float gamma)
 //
 int loadgldriver(const char *soname)
 {
-	const char *name = soname;
+	/*const char *name = soname;
 	if (!name) {
 		name = "system OpenGL library";
 	}
 
 	buildprintf("Loading %s\n", name);
-	if (SDL_GL_LoadLibrary(soname)) return -1;
+	if (SDL_GL_LoadLibrary(soname)) return -1;*/
 	return 0;
 }
 
 int unloadgldriver(void)
 {
-	SDL_GL_UnloadLibrary();
+	//SDL_GL_UnloadLibrary();
 	return 0;
 }
 
@@ -1369,7 +1376,7 @@ int unloadgldriver(void)
 //
 void *getglprocaddress(const char *name, int UNUSED(ext))
 {
-	return (void*)SDL_GL_GetProcAddress(name);
+	return (void*)vglGetProcAddress(name);
 }
 #endif
 
@@ -1707,7 +1714,7 @@ static int buildkeytranslationtable(void)
 #if USE_OPENGL
 static int set_glswapinterval(const osdfuncparm_t *parm)
 {
-	int interval;
+	/*int interval;
 
 	if (nogl) {
 		buildputs("glswapinterval is not adjustable\n");
@@ -1726,7 +1733,7 @@ static int set_glswapinterval(const osdfuncparm_t *parm)
 		buildputs("note: OpenGL swap interval could not be changed\n");
 	} else {
 		glswapinterval = interval;
-	}
+	}*/
 	return OSDCMD_OK;
 }
 #endif

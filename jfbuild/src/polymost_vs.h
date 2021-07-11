@@ -34,6 +34,6 @@ void main(
 	float4 out v_pos : POSITION)
 {
 	v_texcoord = a_texcoord;
-	v_pos = mul(mul(float4(a_vertex, 1.0f) u_modelview) u_projection);
+	v_pos = mul(mul(float4(a_vertex, 1.0f), u_modelview), u_projection);
 }
 )";

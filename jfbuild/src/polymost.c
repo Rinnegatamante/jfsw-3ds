@@ -714,7 +714,7 @@ void polymost_glinit()
 
 	glfunc.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glfunc.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	//glfunc.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	if (glmultisample > 0 && glinfo.multisample) {
 #if (USE_OPENGL != USE_GLES2)
