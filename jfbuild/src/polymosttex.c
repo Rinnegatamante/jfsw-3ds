@@ -1180,11 +1180,11 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 	     mipmap > 0 && (tex->sizx > 1 || tex->sizy > 1);
 	     mipmap--) {
 		if (compress && tdef) {
-			comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
+			//->comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
 			comprdata = (unsigned char *) malloc(comprsize);
 
 			starttime = getticks();
-			ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
+			//->ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
 			if (polymosttexverbosity >= 2) {
 				buildprintf("PolymostTex: ptcompress_compress (%dx%d, %s) took %f sec\n",
 					   tex->sizx, tex->sizy, compressfourcc[compress],
@@ -1205,11 +1205,11 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 	}
 
 	if (compress) {
-		comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
+		//->comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
 		comprdata = (unsigned char *) malloc(comprsize);
 
 		starttime = getticks();
-		ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
+		//->ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
 		if (polymosttexverbosity >= 2) {
 			buildprintf("PolymostTex: ptcompress_compress (%dx%d, %s) took %f sec\n",
 				   tex->sizx, tex->sizy, compressfourcc[compress],
@@ -1244,13 +1244,13 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 		ptm_fixtransparency(tex, (flags & PTH_CLAMPED));
 
 		if (compress) {
-			comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
+			//->comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
 			if (tdef) {
 				comprdata = (unsigned char *) malloc(comprsize);
 			}
 
 			starttime = getticks();
-			ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
+			//->ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
 			if (polymosttexverbosity >= 2) {
 				buildprintf("PolymostTex: ptcompress_compress (%dx%d, %s) took %f sec\n",
 					   tex->sizx, tex->sizy, compressfourcc[compress],

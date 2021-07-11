@@ -132,7 +132,7 @@ struct glfiltermodes glfiltermodes[numglfiltermodes] = {
 };
 
 int glanisotropy = 0;            // 0 = maximum supported by card
-int glusetexcompr = 1;
+int glusetexcompr = 0;
 int gltexcomprquality = 0;	// 0 = fast, 1 = slow and pretty, 2 = very slow and pretty
 int gltexfiltermode = 5;   // GL_LINEAR_MIPMAP_LINEAR
 int glusetexcache = 1;
