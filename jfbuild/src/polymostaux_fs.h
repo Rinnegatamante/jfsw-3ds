@@ -1,4 +1,4 @@
-#glbuild(ES2) #version 100
+/*#glbuild(ES2) #version 100
 #glbuild(2)   #version 110
 #glbuild(3)   #version 140
 
@@ -38,4 +38,29 @@ void main(void)
         // Foreground colour.
         o_fragcolour = u_colour;
     }
+}*/
+
+const char *default_polymostaux_fs_glsl =
+R"(float4 main(
+	float2 v_texcoord : TEXCOORD0,
+	uniform sampler2D u_texture,
+	uniform float4 u_colour,
+	uniform float4 u_bgcolour,
+	uniform int u_mode)
+{
+	float4 pixel;
+
+    if (u_mode == 0) {
+        // Text.
+        pixel = tex2D(u_texture, v_texcoord);
+        return lerp(u_bgcolour, u_colour, pixel.a);
+    } else if (u_mode == 1) {
+        // Tile screen.
+        pixel = tex2D(u_texture, v_texcoord);
+        return lerp(u_bgcolour, pixel, pixel.a);
+    } else if (u_mode == 2) {
+        // Foreground colour.
+        return u_colour;
+    }
 }
+)";

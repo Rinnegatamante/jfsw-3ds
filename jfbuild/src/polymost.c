@@ -80,6 +80,10 @@ Low priority:
 # include "polymosttex_priv.h"
 # include "polymosttexcache.h"
 # include "mdsprite_priv.h"
+# include "polymost_vs.h"
+# include "polymost_fs.h"
+# include "polymostaux_vs.h"
+# include "polymostaux_fs.h"
 #endif
 extern char textfont[2048], smalltextfont[2048];
 
@@ -601,12 +605,6 @@ static void checkindexbuffer(unsigned int size)
 
 static void polymost_loadshaders(void)
 {
-	extern const char default_polymost_fs_glsl[];
-	extern const char default_polymost_vs_glsl[];
-
-	extern const char default_polymostaux_fs_glsl[];
-	extern const char default_polymostaux_vs_glsl[];
-
 	GLuint shader[2] = {0,0};
 
 	// General texture rendering shader.

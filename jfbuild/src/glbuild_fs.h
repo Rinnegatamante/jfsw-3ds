@@ -31,8 +31,8 @@ void main(void)
 
 const char *default_glbuild_fs_glsl =
 R"(float4 main(
-	float2 v_texcoord : TEXCOORD0;
-	uniform sampler2D u_frame;
+	float2 v_texcoord : TEXCOORD0,
+	uniform sampler2D u_frame,
 	uniform sampler2D u_palette)
 {
 	float pixelvalue = tex2D(u_frame, v_texcoord).r;

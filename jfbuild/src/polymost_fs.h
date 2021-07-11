@@ -1,4 +1,4 @@
-#glbuild(ES2) #version 100
+/*#glbuild(ES2) #version 100
 #glbuild(2)   #version 110
 #glbuild(3)   #version 140
 
@@ -45,4 +45,32 @@ void main(void)
 
     texcolour = applyfog(texcolour);
     o_fragcolour = mix(texcolour * u_colour, glowcolour, glowcolour.a);
+}*/
+
+const char *default_polymost_fs_glsl =
+R"(uniform float u_fogdensity;
+uniform float4 u_fogcolour;
+float4 applyfog(float4 gl_FragCoord, float4 inputcolour) {
+    const float LOG2_E = 1.442695;
+    float dist = gl_FragCoord.z / gl_FragCoord.w;
+    float densdist = u_fogdensity * dist;
+    float amount = 1.0 - clamp(exp2(-densdist * densdist * LOG2_E), 0.0, 1.0);
+    return lerp(inputcolour, u_fogcolour, amount);
 }
+float4 main(
+	float2 v_texcoord : TEXCOORD0,
+	float4 coords : WPOS,
+	uniform sampler2D u_texture,
+	uniform sampler2D u_glowtexture)
+{
+	float4 texcolour = tex2D(u_texture, v_texcoord);
+    float4 glowcolour = tex2D(u_glowtexture, v_texcoord);
+
+    if (texcolour.a < u_alphacut) {
+        discard;
+    }
+
+    texcolour = applyfog(coords, texcolour);
+    return lerp(texcolour * u_colour, glowcolour, glowcolour.a);
+}
+)";
