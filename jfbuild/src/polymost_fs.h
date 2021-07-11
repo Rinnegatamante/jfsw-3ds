@@ -62,8 +62,8 @@ float4 applyfog(float4 gl_FragCoord, float4 inputcolour) {
 float4 main(
 	float2 v_texcoord : TEXCOORD0,
 	float4 coords : WPOS,
-	uniform sampler2D u_texture,
-	uniform sampler2D u_glowtexture)
+	uniform sampler2D u_texture : TEXUNIT0,
+	uniform sampler2D u_glowtexture : TEXUNIT1)
 {
 	float4 texcolour = tex2D(u_texture, v_texcoord);
     float4 glowcolour = tex2D(u_glowtexture, v_texcoord);

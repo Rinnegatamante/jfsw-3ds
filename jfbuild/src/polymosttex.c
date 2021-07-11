@@ -1239,7 +1239,7 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 			GL_UNSIGNED_BYTE, (const GLvoid *) tex->pic);
 	}
 
-	for (mipmap = 1; tex->sizx > 1 || tex->sizy > 1; mipmap++) {
+	/*for (mipmap = 1; tex->sizx > 1 || tex->sizy > 1; mipmap++) {
 		ptm_mipscale(tex);
 		ptm_fixtransparency(tex, (flags & PTH_CLAMPED));
 
@@ -1279,7 +1279,7 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 				intexfmt, tex->sizx, tex->sizy, 0, tex->rawfmt,
 				GL_UNSIGNED_BYTE, (const GLvoid *) tex->pic);
 		}
-	}
+	}*/
 
 	ptm->flags = 0;
 	ptm->flags |= (tex->hasalpha ? PTH_HASALPHA : 0);

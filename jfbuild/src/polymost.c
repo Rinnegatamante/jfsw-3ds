@@ -149,7 +149,7 @@ int glpolygonmode = 0;     // 0:GL_FILL,1:GL_LINE,2:GL_POINT,3:clear+GL_FILL
 static GLuint texttexture = 0;
 static GLuint nulltexture = 0;
 
-#define SHADERDEV 1
+//#define SHADERDEV 1
 static struct {
 	GLuint vao;					// Vertex array object.
 	GLuint program;             // GLSL program object.
@@ -626,8 +626,8 @@ static void polymost_loadshaders(void)
 		polymostglsl.attrib_texcoord     = polymost_get_attrib(polymostglsl.program, "a_texcoord");
 		polymostglsl.uniform_modelview   = polymost_get_uniform(polymostglsl.program, "u_modelview");
 		polymostglsl.uniform_projection  = polymost_get_uniform(polymostglsl.program, "u_projection");
-		polymostglsl.uniform_texture     = polymost_get_uniform(polymostglsl.program, "u_texture");
-		polymostglsl.uniform_glowtexture = polymost_get_uniform(polymostglsl.program, "u_glowtexture");
+		//polymostglsl.uniform_texture     = polymost_get_uniform(polymostglsl.program, "u_texture");
+		//polymostglsl.uniform_glowtexture = polymost_get_uniform(polymostglsl.program, "u_glowtexture");
 		polymostglsl.uniform_alphacut    = polymost_get_uniform(polymostglsl.program, "u_alphacut");
 		polymostglsl.uniform_colour      = polymost_get_uniform(polymostglsl.program, "u_colour");
 		polymostglsl.uniform_fogcolour   = polymost_get_uniform(polymostglsl.program, "u_fogcolour");
@@ -641,8 +641,8 @@ static void polymost_loadshaders(void)
 #endif
 
 		glfunc.glUseProgram(polymostglsl.program);
-		glfunc.glUniform1i(polymostglsl.uniform_texture, 0);		//GL_TEXTURE0
-		glfunc.glUniform1i(polymostglsl.uniform_glowtexture, 1);	//GL_TEXTURE1
+		//glfunc.glUniform1i(polymostglsl.uniform_texture, 0);		//GL_TEXTURE0
+		//glfunc.glUniform1i(polymostglsl.uniform_glowtexture, 1);	//GL_TEXTURE1
 
 		// Generate a buffer object for vertex/colour elements.
 		glfunc.glGenBuffers(1, &polymostglsl.elementbuffer);
@@ -676,7 +676,7 @@ static void polymost_loadshaders(void)
 		polymostauxglsl.attrib_vertex    = polymost_get_attrib(polymostauxglsl.program, "a_vertex");
 		polymostauxglsl.attrib_texcoord  = polymost_get_attrib(polymostauxglsl.program, "a_texcoord");
 		polymostauxglsl.uniform_projection = polymost_get_uniform(polymostauxglsl.program, "u_projection");
-		polymostauxglsl.uniform_texture  = polymost_get_uniform(polymostauxglsl.program, "u_texture");
+		//polymostauxglsl.uniform_texture  = polymost_get_uniform(polymostauxglsl.program, "u_texture");
 		polymostauxglsl.uniform_colour   = polymost_get_uniform(polymostauxglsl.program, "u_colour");
 		polymostauxglsl.uniform_bgcolour = polymost_get_uniform(polymostauxglsl.program, "u_bgcolour");
 		polymostauxglsl.uniform_mode     = polymost_get_uniform(polymostauxglsl.program, "u_mode");
@@ -689,7 +689,7 @@ static void polymost_loadshaders(void)
 #endif
 
 		glfunc.glUseProgram(polymostauxglsl.program);
-		glfunc.glUniform1i(polymostauxglsl.uniform_texture, 0);	//GL_TEXTURE0
+		//glfunc.glUniform1i(polymostauxglsl.uniform_texture, 0);	//GL_TEXTURE0
 
 		// Generate a buffer object for vertex/colour elements and pre-allocate its memory.
 		glfunc.glGenBuffers(1, &polymostauxglsl.elementbuffer);
