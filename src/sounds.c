@@ -1335,7 +1335,7 @@ void MusicStartup( void )
     else
         {
         buildprintf("Music error: %s\n",MUSIC_ErrorString(MUSIC_ErrorCode));
-        gs.MusicOn = FALSE;
+        //gs.MusicOn = FALSE;
         }
 
     if (MusicInitialized)
