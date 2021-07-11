@@ -32,6 +32,7 @@ JFBUILDOBJS = \
 	$(ESRC)/engine.o \
 	$(ESRC)/kplib.o \
 	$(ESRC)/osd.o \
+	$(ESRC)/polymost.o \
 	$(ESRC)/pragmas.o \
 	$(ESRC)/scriptfile.o \
 	$(ESRC)/sdlayer2.o \
@@ -143,7 +144,7 @@ PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-gcc
 CXX      = $(PREFIX)-g++
 CFLAGS  = -fsigned-char -Wl,-q,--wrap,fopen,--wrap,opendir,--wrap,open,--wrap,access \
-	-O3 -g -fno-optimize-sibling-calls \
+	-O3 -g -fno-optimize-sibling-calls -DUSE_POLYMOST \
 	-ffast-math -mtune=cortex-a9 -mfpu=neon -DHAVE_VORBIS -Isrc \
 	-Ijfbuild/include -Ijfmact -Ijfaudiolib/include -DVITA -DHAVE_SDL \
 	-Wno-implicit-function-declaration -I$(VITASDK)/$(PREFIX)/include/SDL2

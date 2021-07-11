@@ -31,6 +31,45 @@
 #include "build.h"
 #include "grpscan.h"
 
+#include <dirent.h>
+
+char patched_fname[512];
+char *patch_fname(char *fname) {
+	if (strstr(fname, "ux0")) {
+		char *s = strstr(fname, ".");
+		if (s)
+			fname = s;
+		else
+			return fname;
+	}
+	
+	if (fname[0] == '.') {
+		char *s = strstr(fname, "/");
+		if (s)
+			fname = s + 1;
+		else
+			fname++;
+	}
+	sprintf(patched_fname, "ux0:data/jfsw/%s", fname);
+	return patched_fname;
+}
+
+int __wrap_access(const char *fname, int mode) {
+	return __real_access(patch_fname(fname), mode);
+}
+
+FILE *__wrap_fopen(char *fname, char *mode) {
+	return __real_fopen(patch_fname(fname), mode);
+}
+
+int __wrap_open(const char *fname, int mode) {
+	return __real_open(patch_fname(fname), mode);
+}
+
+DIR *__wrap_opendir(const char *fname) {
+	return __real_opendir(patch_fname(fname));
+}
+
 struct grpfile grpfiles[] = {
     { "Registered Version",         0x7545319F, 47536148, 0, "sw.grp", NULL, NULL },
     { "Shareware Version",          0x08A7FA1F, 26056769, 0, "swshare.grp", NULL, NULL },
@@ -126,7 +165,7 @@ int ScanGroups(void)
 
     LoadGroupsCache();
 
-    srch = klistpath("/", "*.grp", CACHE1D_FIND_FILE);
+    srch = klistpath("ux0:data/jfsw/", "*.grp", CACHE1D_FIND_FILE);
 
     for (sidx = srch; sidx; sidx = sidx->next) {
         for (fg = grpcache; fg; fg = fg->next) {
