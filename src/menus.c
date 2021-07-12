@@ -2836,10 +2836,9 @@ int vita_kb(const char *title, const char *body) {
 	sceImeDialogGetResult(&result);
 	if (result.button == SCE_IME_DIALOG_BUTTON_ENTER) {
 		utf2ascii(body, input_text);
-		return 0;
 	}
 	sceImeDialogTerm();
-	return -1;
+	return result.button == SCE_IME_DIALOG_BUTTON_ENTER ? 0 : -1;
 }
 #endif
 
