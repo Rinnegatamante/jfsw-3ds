@@ -284,7 +284,7 @@ static char * joystickdefaults[MAXJOYBUTTONS] =
    "Open",      // Circle
    "Crouch",         // Square
    "Inventory_Right",        // Triangle
-   "Map",            // Select
+   "Toggle_Crosshair",            // Select
    "",            // Guide
    "Show_Menu",            // Start
    "",            // L thumb

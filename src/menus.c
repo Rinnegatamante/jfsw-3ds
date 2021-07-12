@@ -2793,6 +2793,56 @@ MNU_GetLoadCustom(void)
 //  . Call MNU_GetInput to allow string input of description.
 //  . Save the game if there is one by calling: MNU_SaveGameCustom.
 ////////////////////////////////////////////////
+#ifdef VITA
+#include <vitasdk.h>
+#include <vitaGL.h>
+
+void ascii2utf(uint16_t* dst, char* src){
+	if(!src || !dst)return;
+	while(*src)*(dst++)=(*src++);
+	*dst=0x00;
+}
+
+void utf2ascii(char* dst, uint16_t* src){
+	if(!src || !dst)return;
+	while(*src)*(dst++)=(*(src++))&0xFF;
+	*dst=0x00;
+}
+
+static uint16_t input_title[SCE_IME_DIALOG_MAX_TITLE_LENGTH];
+static uint16_t initial_text[SCE_IME_DIALOG_MAX_TEXT_LENGTH];
+static uint16_t input_text[SCE_IME_DIALOG_MAX_TEXT_LENGTH + 1];
+
+int vita_kb(const char *title, const char *body) {
+	sceClibMemset(initial_text, 0, (SCE_IME_DIALOG_MAX_TEXT_LENGTH) << 1);
+	ascii2utf(input_title, title);
+	ascii2utf(input_text, body);
+	SceImeDialogParam param;
+	sceImeDialogParamInit(&param);
+	param.supportedLanguages = 0x0001FFFF;
+	param.languagesForced = SCE_TRUE;
+	param.type = SCE_IME_TYPE_BASIC_LATIN;
+	param.title = input_title;
+	param.maxTextLength = SCE_IME_DIALOG_MAX_TEXT_LENGTH;
+	param.initialText = initial_text;
+	param.inputTextBuffer = input_text;
+	sceImeDialogInit(&param);
+	while (sceImeDialogGetStatus() != 2) {
+		vglSwapBuffers(GL_TRUE);
+	}
+	SceCommonDialogStatus status = sceImeDialogGetStatus();
+	SceImeDialogResult result;
+	sceClibMemset(&result, 0, sizeof(SceImeDialogResult));
+	sceImeDialogGetResult(&result);
+	if (result.button == SCE_IME_DIALOG_BUTTON_ENTER) {
+		utf2ascii(body, input_text);
+		return 0;
+	}
+	sceImeDialogTerm();
+	return -1;
+}
+#endif
+
 BOOL
 MNU_GetSaveCustom(void)
     {
@@ -2805,6 +2855,27 @@ MNU_GetSaveCustom(void)
         return(FALSE);
 #ifdef _3DS
 	int ret = (ctr_swkbd("Enter save description..", SaveGameDescr[save_num], SaveGameDescr[save_num]));
+	if (ret == 0)
+    {
+        strcpy(BackupSaveGameDescr, SaveGameDescr[save_num]);
+
+        PauseAction();
+
+        LoadSaveMsg("Saving...");
+
+        if (SaveGame(save_num) != -1)
+            {
+            QuickLoadNum = save_num;
+
+            LoadGameGroup.cursor = save_num;
+            LastSaveNum = -1;
+            }
+
+        ResumeAction();
+        ExitMenus();
+    }
+#elif defined(VITA)
+	int ret = vita_kb("Enter save description", SaveGameDescr[save_num]);
 	if (ret == 0)
     {
         strcpy(BackupSaveGameDescr, SaveGameDescr[save_num]);
