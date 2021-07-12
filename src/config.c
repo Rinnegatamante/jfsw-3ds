@@ -253,7 +253,7 @@ void CONFIG_SetDefaults( void )
    for (i=0; i < MAXJOYAXES; i++) {
       JoystickAnalogScale[i] = 65536;
       JoystickAnalogDead[i] = 1024;
-#ifdef _3DS
+#ifdef VITA
       JoystickAnalogSaturate[i] = ( i < 2 ) ? 16384 : 24576;
 #else
       JoystickAnalogSaturate[i] = 32767-1024;
