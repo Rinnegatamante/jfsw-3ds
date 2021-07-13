@@ -1164,7 +1164,7 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 	ptm_fixtransparency(tex, (flags & PTH_CLAMPED));
 
 	mipmap = 0;
-	if (! (flags & PTH_NOMIPLEVEL)) {
+	/*if (! (flags & PTH_NOMIPLEVEL)) {
 		// if we aren't instructed to preserve all mipmap levels,
 		// immediately throw away gltexmiplevel mipmaps
 		mipmap = max(0, gltexmiplevel);
@@ -1174,17 +1174,17 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 		// throw away additional mipmaps until the texture fits within
 		// the maximum size permitted by the GL driver
 		mipmap++;
-	}
+	}*/
 
-	for ( ;
+	/*for ( ;
 	     mipmap > 0 && (tex->sizx > 1 || tex->sizy > 1);
 	     mipmap--) {
 		if (compress && tdef) {
-			//->comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
+			comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
 			comprdata = (unsigned char *) malloc(comprsize);
 
 			starttime = getticks();
-			//->ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
+			ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
 			if (polymosttexverbosity >= 2) {
 				buildprintf("PolymostTex: ptcompress_compress (%dx%d, %s) took %f sec\n",
 					   tex->sizx, tex->sizy, compressfourcc[compress],
@@ -1202,14 +1202,14 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 
 		ptm_mipscale(tex);
 		ptm_fixtransparency(tex, (flags & PTH_CLAMPED));
-	}
+	}*/
 
-	if (compress) {
-		//->comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
+	/*if (compress) {
+		comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
 		comprdata = (unsigned char *) malloc(comprsize);
 
 		starttime = getticks();
-		//->ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
+		ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
 		if (polymosttexverbosity >= 2) {
 			buildprintf("PolymostTex: ptcompress_compress (%dx%d, %s) took %f sec\n",
 				   tex->sizx, tex->sizy, compressfourcc[compress],
@@ -1233,7 +1233,7 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 			// force each mipmap to be allocated afresh in the loop below
 			comprdata = 0;
 		}
-	} else {
+	} else */{
 		glfunc.glTexImage2D(GL_TEXTURE_2D, 0,
 			intexfmt, tex->sizx, tex->sizy, 0, tex->rawfmt,
 			GL_UNSIGNED_BYTE, (const GLvoid *) tex->pic);
@@ -1244,13 +1244,13 @@ static void ptm_uploadtexture(PTMHead * ptm, unsigned short flags, PTTexture * t
 		ptm_fixtransparency(tex, (flags & PTH_CLAMPED));
 
 		if (compress) {
-			//->comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
+			comprsize = ptcompress_getstorage(tex->sizx, tex->sizy, compress);
 			if (tdef) {
 				comprdata = (unsigned char *) malloc(comprsize);
 			}
 
 			starttime = getticks();
-			//->ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
+			ptcompress_compress(tex->pic, tex->sizx, tex->sizy, comprdata, compress);
 			if (polymosttexverbosity >= 2) {
 				buildprintf("PolymostTex: ptcompress_compress (%dx%d, %s) took %f sec\n",
 					   tex->sizx, tex->sizy, compressfourcc[compress],
