@@ -72,7 +72,7 @@ static SDL_Window *sdl_window;
 static SDL_Renderer *sdl_renderer;	// For non-GL 8-bit mode output.
 static SDL_Texture *sdl_texture;	// For non-GL 8-bit mode output.
 #else
-static SDL_Surface *sdl_surface;	// For non-GL 8-bit mode output.
+static SDL_Surface *sdl_surface = NULL;	// For non-GL 8-bit mode output.
 #endif
 static unsigned char *frame;
 int xres=-1, yres=-1, bpp=0, fullscreen=0, bytesperline, imageSize;
@@ -293,7 +293,7 @@ int psp2_main(unsigned int argc, void *argv) {
 	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_LANG, (int *)&cmnDlgCfgParam.language);
 	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_ENTER_BUTTON, (int *)&cmnDlgCfgParam.enterButtonAssign);
     sceCommonDialogSetConfigParam(&cmnDlgCfgParam);
-    
+	
     scePowerSetArmClockFrequency(444);
     scePowerSetBusClockFrequency(222);
     scePowerSetGpuClockFrequency(222);
@@ -313,6 +313,16 @@ int psp2_main(unsigned int argc, void *argv) {
     
 	return app_main(argc, (char const * const*)argv);
 }
+
+/*int crasher(unsigned int argc, void *argv) {
+	uint32_t *nullptr = NULL;
+	for (;;) {
+		SceCtrlData pad;
+		sceCtrlPeekBufferPositive(0, &pad, 1);
+		if (pad.buttons & SCE_CTRL_SELECT) *nullptr = 0;
+		sceKernelDelayThread(100);
+	}
+}*/
 #endif
 
 int main(int argc, char *argv[])
@@ -336,6 +346,9 @@ int main(int argc, char *argv[])
 		}
 		sceKernelExitProcess(0);
 	}
+	
+	//SceUID crasher_thread = sceKernelCreateThread("crasher", crasher, 0x40, 0x1000, 0, 0, NULL);
+	//sceKernelStartThread(crasher_thread, 0, NULL);
 	
 	SceUID main_thread = sceKernelCreateThread("JFSW", psp2_main, 0x40, 0x800000, 0, 0, NULL);
 	if (main_thread >= 0){
@@ -1064,7 +1077,7 @@ int setvideomode(int x, int y, int c, int fs)
 			else flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		sdl_window = SDL_CreateWindow(wintitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, x, y, flags);
+		/*sdl_window = SDL_CreateWindow(wintitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, x, y, flags);
 		if (!sdl_window) {
 			buildprintf("Error creating window: %s\n", SDL_GetError());
 
@@ -1075,9 +1088,8 @@ int setvideomode(int x, int y, int c, int fs)
 				continue;
 			}
 #endif
-
 			return -1;
-		}
+		}*/
 		break;
 	} while (1);
 
@@ -1117,12 +1129,13 @@ int setvideomode(int x, int y, int c, int fs)
 				return -1;
 			}
 #else
+/*
 			// 8-bit software with no GL shader blitting goes via the SDL rendering apparatus.
 			sdl_surface = SDL_CreateRGBSurface(0, x, y, 8, 0, 0, 0, 0);
 			if (!sdl_surface) {
 				buildprintf("Error creating surface: %s\n", SDL_GetError());
 				return -1;
-			}
+			}*/
 #endif
 #if USE_OPENGL
 		} else {
@@ -1307,7 +1320,7 @@ void showframe(void)
 	SDL_RenderPresent(sdl_renderer);
 
 #else //SDLAYER_USE_RENDERER
-	SDL_Surface *winsurface;
+/*	SDL_Surface *winsurface;
 
 	if (SDL_LockSurface(sdl_surface)) {
 		debugprintf("Could not lock surface: %s\n", SDL_GetError());
@@ -1331,7 +1344,7 @@ void showframe(void)
 		return;
 	}
 	SDL_BlitSurface(sdl_surface, NULL, winsurface, NULL);
-	SDL_UpdateWindowSurface(sdl_window);
+	SDL_UpdateWindowSurface(sdl_window);*/
 #endif //SDLAYER_USE_RENDERER
 }
 
@@ -1347,11 +1360,11 @@ int setpalette(int UNUSED(start), int UNUSED(num), unsigned char * UNUSED(dapal)
 	}
 #endif
 #ifndef SDLAYER_USE_RENDERER
-	if (sdl_surface) {
+/*	if (sdl_surface) {
 		if (SDL_SetPaletteColors(sdl_surface->format->palette, (const SDL_Color *)curpalettefaded, 0, 256)) {
 			debugprintf("Could not set palette: %s\n", SDL_GetError());
 		}
-	}
+	}*/
 #endif
 	return 0;
 }
@@ -1400,7 +1413,7 @@ void *getglprocaddress(const char *name, int UNUSED(ext))
 #endif
 
 
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(VITA)
 extern struct sdlappicon sdlappicon;
 static SDL_Surface * loadappicon(void)
 {
