@@ -1006,7 +1006,8 @@ void drawpoly (double *dpx, double *dpy, int n, int method)
 	double ngvx = 0.0, ngvy = 0.0, ngvo = 0.0, dp, up, vp, rdp, du0 = 0.0, du1 = 0.0, dui, duj;
 	double ngdx2, ngux2, ngvx2;
 	double f, r, ox, oy, oz, ox2, oy2, oz2, dd[16], uu[16], vv[16], px[16], py[16], uoffs;
-	int i, j, k, x, y, z, nn, ix0, ix1, mini, maxi, tsizx, tsizy, tsizxm1 = 0, tsizym1 = 0, ltsizy = 0;
+	int i, j, k, x, y, z, nn, mini, maxi, tsizx, tsizy, tsizxm1 = 0, tsizym1 = 0, ltsizy = 0;
+	int64_t ix0, ix1;
 	int xx, yy, xi, d0, u0, v0, d1, u1, v1, xmodnice = 0, ymulnice = 0, dorot;
 	unsigned char dacol = 0, *walptr, *palptr = NULL, *vidp, *vide;
 
@@ -1237,8 +1238,8 @@ void drawpoly (double *dpx, double *dpy, int n, int method)
 			}
 
 			f = 1.0/(double)tsizx;
-			ix0 = (int)floor(du0*f);
-			ix1 = (int)floor(du1*f);
+			ix0 = (int64_t)floor(du0*f);
+			ix1 = (int64_t)floor(du1*f);
 			for(;ix0<=ix1;ix0++)
 			{
 				du0 = (double)((ix0  )*tsizx); // + uoffs;
