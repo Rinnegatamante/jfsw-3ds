@@ -153,20 +153,35 @@ CFLAGS  = -fsigned-char -Wl,-q,--wrap,fopen,--wrap,opendir,--wrap,open,--wrap,ac
 	-ffast-math -mtune=cortex-a9 -mfpu=neon -DHAVE_VORBIS -Isrc \
 	-Ijfbuild/include -Ijfmact -Ijfaudiolib/include -DVITA -DHAVE_SDL \
 	-Wno-implicit-function-declaration -I$(VITASDK)/$(PREFIX)/include/SDL2
+	
+ifeq ($(WANTON),1)
+CFLAGS += -DWANTON
+endif
+
 CXXFLAGS  = $(CFLAGS) -fno-exceptions -std=gnu++11
 ASFLAGS = $(CFLAGS)
 
+ifeq ($(WANTON),1)
+all: $(TARGET).bin
+
+$(TARGET).bin: $(TARGET).velf
+	vita-make-fself -c -s $< build/$(TARGET).bin
+else
 all: $(TARGET).vpk
 
 $(TARGET).vpk: $(TARGET).velf
 	vita-make-fself -c -s $< build/eboot.bin
 	vita-mksfoex -s TITLE_ID=$(TITLE) -d ATTRIBUTE2=12 "Shadow Warrior" param.sfo
-	cp -f param.sfo build/sce_sys/param.sfo
+	vita-pack-vpk -s param.sfo -b build/eboot.bin \
+		--add build/sce_sys/icon0.png=sce_sys/icon0.png \
+		--add build/sce_sys/livearea/contents/bg.png=sce_sys/livearea/contents/bg.png \
+		--add build/sce_sys/livearea/contents/startup.png=sce_sys/livearea/contents/startup.png \
+		--add build/sce_sys/livearea/contents/wanton.png=sce_sys/livearea/contents/wanton.png \
+		--add build/sce_sys/livearea/contents/template.xml=sce_sys/livearea/contents/template.xml \
+		--add build/jfsw.bin=jfsw.bin \
+		$(TARGET).vpk
+endif
 
-	#------------ Comment this if you don't have 7zip ------------------
-	7z a -tzip ./$(TARGET).vpk -r ./build/sce_sys ./build/eboot.bin ./build/shaders
-	#-------------------------------------------------------------------
-	
 %.velf: %.elf
 	cp $< $<.unstripped.elf
 	$(PREFIX)-strip -g $<
@@ -176,4 +191,4 @@ $(TARGET).elf: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS) $(TARGET).elf.unstripped.elf $(TARGET).vpk build/eboot.bin build/sce_sys/param.sfo ./param.sfo
+	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS) $(TARGET).elf.unstripped.elf $(TARGET).vpk build/eboot.bin ./param.sfo

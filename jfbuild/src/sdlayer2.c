@@ -347,6 +347,22 @@ int main(int argc, char *argv[])
 		sceKernelExitProcess(0);
 	}
 	
+#ifdef WANTON
+	if (sceIoGetstat("ux0:data/jfsw/wt.grp.bak", &st1))
+		sceIoRename("ux0:data/jfsw/wt.grp.bak", "ux0:data/jfsw/wt.grp");
+#else
+	// Checking if Wanton Destruction has been launched
+	sceAppUtilInit(&(SceAppUtilInitParam){}, &(SceAppUtilBootParam){});
+	SceAppUtilAppEventParam eventParam;
+	memset(&eventParam, 0, sizeof(SceAppUtilAppEventParam));
+	sceAppUtilReceiveAppEvent(&eventParam);
+	if (eventParam.type == 0x05)
+		sceAppMgrLoadExec("app0:/jfsw.bin", NULL, NULL);
+		
+	if (sceIoGetstat("ux0:data/jfsw/wt.grp", &st1))
+		sceIoRename("ux0:data/jfsw/wt.grp", "ux0:data/jfsw/wt.grp.bak");
+#endif
+	
 	//SceUID crasher_thread = sceKernelCreateThread("crasher", crasher, 0x40, 0x1000, 0, 0, NULL);
 	//sceKernelStartThread(crasher_thread, 0, NULL);
 	
