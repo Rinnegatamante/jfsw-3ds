@@ -348,8 +348,13 @@ int main(int argc, char *argv[])
 	}
 	
 #ifdef WANTON
-	if (sceIoGetstat("ux0:data/jfsw/wt.grp.bak", &st1))
-		sceIoRename("ux0:data/jfsw/wt.grp.bak", "ux0:data/jfsw/wt.grp");
+	if (sceIoGetstat("ux0:data/jfsw/wt.grp", &st1) >= 0) {
+		sceIoRename("ux0:data/jfsw/sw.grp", "ux0:data/jfsw/sw.grp.bak");
+		sceIoRename("ux0:data/jfsw/wt.grp", "ux0:data/jfsw/sw.grp");
+	}else if (sceIoGetstat("ux0:data/jfsw/wt.grp.bak", &st1) >= 0) {
+		sceIoRename("ux0:data/jfsw/sw.grp", "ux0:data/jfsw/sw.grp.bak");
+		sceIoRename("ux0:data/jfsw/wt.grp.bak", "ux0:data/jfsw/sw.grp");
+	}
 #else
 	// Checking if Wanton Destruction has been launched
 	sceAppUtilInit(&(SceAppUtilInitParam){}, &(SceAppUtilBootParam){});
@@ -359,8 +364,12 @@ int main(int argc, char *argv[])
 	if (eventParam.type == 0x05)
 		sceAppMgrLoadExec("app0:/jfsw.bin", NULL, NULL);
 		
-	if (sceIoGetstat("ux0:data/jfsw/wt.grp", &st1))
+	if (sceIoGetstat("ux0:data/jfsw/sw.grp.bak", &st1) >= 0) {
+		sceIoRename("ux0:data/jfsw/sw.grp", "ux0:data/jfsw/wt.grp.bak");
+		sceIoRename("ux0:data/jfsw/sw.grp.bak", "ux0:data/jfsw/sw.grp");
+	} else if (sceIoGetstat("ux0:data/jfsw/wt.grp", &st1) >= 0) {
 		sceIoRename("ux0:data/jfsw/wt.grp", "ux0:data/jfsw/wt.grp.bak");
+	}
 #endif
 	
 	//SceUID crasher_thread = sceKernelCreateThread("crasher", crasher, 0x40, 0x1000, 0, 0, NULL);
