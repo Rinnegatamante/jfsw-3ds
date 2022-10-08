@@ -3,12 +3,12 @@ TITLE		:= SHDWWRR32
 GIT_VERSION := $(shell git describe --abbrev=6 --dirty --always --tags)
 SHADERS     := shaders
 
-LIBS = -lvitaGL -lvitashark -lmathneon -lvorbisfile -lvorbis -logg  -lspeexdsp -lmpg123 \
+LIBS = -lvitaGL -lvitashark -lmathneon -lvorbisfile -lvorbis -logg  -lspeexdsp -lmpg123 -lSceShaccCgExt \
 	-lSDL2 -lc -lSceCommonDialog_stub -lSceAudio_stub -lSceLibKernel_stub -lSceShaccCg_stub \
-	-lSceNet_stub -lSceNetCtl_stub -lpng -lSceDisplay_stub -lSceGxm_stub -lSceHid_stub \
+	-lSceNet_stub -lSceNetCtl_stub -lpng -lSceDisplay_stub -lSceGxm_stub -lSceHid_stub -ltaihen_stub \
 	-lSceSysmodule_stub -lSceCtrl_stub -lSceTouch_stub -lSceMotion_stub -lm -lSceAppMgr_stub \
 	-lSceAppUtil_stub -lScePgf_stub -ljpeg -lSceRtc_stub -lScePower_stub -lcurl -lssl -lcrypto -lz \
-	-lSceKernelDmacMgr_stub
+	-lSceKernelDmacMgr_stub -lSceIme_stub -lSceAudioIn_stub
 
 # build locations
 SRC=src
@@ -153,7 +153,8 @@ CFLAGS  = -fsigned-char -Wl,-q,--wrap,fopen,--wrap,opendir,--wrap,open,--wrap,ac
 	-O3 -g -fno-optimize-sibling-calls -DUSE_POLYMOST -DUSE_OPENGL=USE_GLES2\
 	-ffast-math -mtune=cortex-a9 -mfpu=neon -DHAVE_VORBIS -Isrc \
 	-Ijfbuild/include -Ijfmact -Ijfaudiolib/include -DVITA -DHAVE_SDL \
-	-Wno-implicit-function-declaration -I$(VITASDK)/$(PREFIX)/include/SDL2
+	-Wno-implicit-function-declaration -I$(VITASDK)/$(PREFIX)/include/SDL2 \
+	-Wl,-q,--allow-multiple-definition
 	
 ifeq ($(WANTON),1)
 CFLAGS += -DWANTON
